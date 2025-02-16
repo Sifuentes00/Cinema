@@ -15,7 +15,7 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
-/src/test/
+
 *.iws
 *.iml
 *.ipr
