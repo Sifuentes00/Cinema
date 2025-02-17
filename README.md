@@ -6,7 +6,7 @@ Cinema Application — это простое веб-приложение, раз
 параметры пути.
 
 ## Требования
-- Java 8
+- Java 17
 - Spring Boot
 - Spring MVC
 - JUnit 5
