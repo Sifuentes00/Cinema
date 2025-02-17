@@ -1,7 +1,6 @@
 package com.matvey.cinema.controllers;
 
 import com.matvey.cinema.model.Movie;
-import com.matvey.cinema.services.MovieService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
