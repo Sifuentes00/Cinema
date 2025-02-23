@@ -20,7 +20,7 @@ http://localhost:8080/api/query?title=Inception&director=Nolan&releaseYear=2010&
 2. С использованием параметров пути:
 http://localhost:8080/api/path/Inception/Nolan/2010/Sci-Fi
 
-### Пример ответа
+## Пример ответа
 json
 {
 "title": "Inception",
@@ -29,7 +29,7 @@ json
 "genre": "Sci-Fi"
 }
 
-#### Установка и запуск
+## Установка и запуск
 1. Клонируйте репозиторий:
 git clone https://github.com/Sifuentes00/Cinema.git
 2. Перейдите в директорию проекта:
