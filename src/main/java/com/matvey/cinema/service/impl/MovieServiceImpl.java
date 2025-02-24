@@ -15,6 +15,7 @@ public class MovieServiceImpl implements MovieService {
         this.movieDao = movieDao;
     }
 
+    //http://localhost:8080/api/movies/1
     @Override
     public Optional<Movie> findById(Long id) {
         return movieDao.findById(id);
@@ -25,6 +26,7 @@ public class MovieServiceImpl implements MovieService {
         return movieDao.findAll();
     }
 
+    //http://localhost:8080/api/movies/query?id=1&title=Inception&director=Christopher%20Nolan&releaseYear=2010&genre=Sci-Fi
     @Override
     public Optional<Movie> findByQueryParams(Long id, String title, String director,
                                              int releaseYear, String genre) {
