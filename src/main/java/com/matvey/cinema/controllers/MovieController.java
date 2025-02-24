@@ -20,7 +20,6 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    //http://localhost:8080/api/movies/1
     @GetMapping("/{id}")
     public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
         Optional<Movie> movie = movieService.findById(id);
@@ -34,7 +33,6 @@ public class MovieController {
         return ResponseEntity.ok(movies);
     }
 
-    //http://localhost:8080/api/movies/query?id=1&title=Inception&director=Christopher%20Nolan&releaseYear=2010&genre=Sci-Fi
     @GetMapping("/query")
     public ResponseEntity<Movie> getMovieByQueryParams(
             @RequestParam Long id,
@@ -43,16 +41,8 @@ public class MovieController {
             @RequestParam int releaseYear,
             @RequestParam String genre) {
 
-        List<Movie> movies = movieService.findAll();
-        for (Movie movie : movies) {
-            if (movie.getId().equals(id)
-                    && movie.getTitle().equalsIgnoreCase(title)
-                    && movie.getDirector().equalsIgnoreCase(director)
-                    && movie.getReleaseYear() == releaseYear
-                    && movie.getGenre().equalsIgnoreCase(genre)) {
-                return ResponseEntity.ok(movie);
-            }
-        }
-        return ResponseEntity.notFound().build();
+        Optional<Movie> movie = movieService.findByQueryParams(id, title, director, releaseYear, genre);
+        return movie.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

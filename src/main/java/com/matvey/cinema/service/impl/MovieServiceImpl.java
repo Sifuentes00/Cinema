@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class MovieServiceImpl implements MovieService {
     private final MovieDao movieDao;
@@ -24,5 +23,20 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> findAll() {
         return movieDao.findAll();
+    }
+
+    @Override
+    public Optional<Movie> findByQueryParams(Long id, String title, String director, int releaseYear, String genre) {
+        List<Movie> movies = movieDao.findAll();
+        for (Movie movie : movies) {
+            if (movie.getId().equals(id)
+                    && movie.getTitle().equalsIgnoreCase(title)
+                    && movie.getDirector().equalsIgnoreCase(director)
+                    && movie.getReleaseYear() == releaseYear
+                    && movie.getGenre().equalsIgnoreCase(genre)) {
+                return Optional.of(movie);
+            }
+        }
+        return Optional.empty(); // Если фильм не найден, возвращаем пустой Optional
     }
 }
