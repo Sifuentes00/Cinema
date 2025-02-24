@@ -1,7 +1,6 @@
 package com.matvey.cinema.service;
 
 import com.matvey.cinema.model.Movie;
-
 import java.util.List;
 import java.util.Optional;
 
