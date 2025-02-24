@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MovieService {
-    Optional<Movie> findById(Long id); // Найти фильм по ID
+    Optional<Movie> findById(Long id);
 
-    List<Movie> findAll(); // Получить все фильмы
+    List<Movie> findAll();
 
-    Optional<Movie> findByQueryParams(Long id, String title, String director, int releaseYear, String genre); // Найти фильм по параметрам
+    Optional<Movie> findByQueryParams(Long id, String title, String director,
+                                      int releaseYear, String genre);
 }

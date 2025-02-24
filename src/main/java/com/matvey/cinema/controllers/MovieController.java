@@ -41,7 +41,8 @@ public class MovieController {
             @RequestParam int releaseYear,
             @RequestParam String genre) {
 
-        Optional<Movie> movie = movieService.findByQueryParams(id, title, director, releaseYear, genre);
+        Optional<Movie> movie =
+                movieService.findByQueryParams(id, title, director, releaseYear, genre);
         return movie.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

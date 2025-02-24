@@ -26,7 +26,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Optional<Movie> findByQueryParams(Long id, String title, String director, int releaseYear, String genre) {
+    public Optional<Movie> findByQueryParams(Long id, String title, String director,
+                                             int releaseYear, String genre) {
         List<Movie> movies = movieDao.findAll();
         for (Movie movie : movies) {
             if (movie.getId().equals(id)
