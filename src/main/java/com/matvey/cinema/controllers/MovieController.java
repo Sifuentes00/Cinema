@@ -34,7 +34,7 @@ public class MovieController {
         return ResponseEntity.ok(movies);
     }
 
-    //GET http://localhost:8080/api/movies/query?id=1&title=Inception&director=Christopher%20Nolan&releaseYear=2010&genre=Sci-Fi
+    //http://localhost:8080/api/movies/query?id=1&title=Inception&director=Christopher%20Nolan&releaseYear=2010&genre=Sci-Fi
     @GetMapping("/query")
     public ResponseEntity<Movie> getMovieByQueryParams(
             @RequestParam Long id,
