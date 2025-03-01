@@ -1,14 +1,36 @@
 package com.matvey.cinema.model;
 
-public class Movie {
-    private final Long id; // Уникальный идентификатор фильма
-    private final String title; // Название фильма
-    private final String director; // Режиссер
-    private final int releaseYear; // Год выпуска
-    private final String genre; // Жанр
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-    public Movie(Long id, String title, String director, int releaseYear, String genre) {
-        this.id = id;
+@Entity
+@Table(name = "movies") // Указывает, что эта сущность соответствует таблице "movies"
+public class Movie {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения id
+    private Long id; // Уникальный идентификатор фильма
+
+    @Column(name = "title", nullable = false)
+    private String title; // Название фильма
+
+    @Column(name = "director", nullable = false)
+    private String director; // Режиссер
+
+    @Column(name = "release_year", nullable = false)
+    private int releaseYear; // Год выпуска
+
+    @Column(name = "genre", nullable = false)
+    private String genre; // Жанр
+
+    // Пустой конструктор необходим для JPA
+    public Movie() {
+    }
+
+    public Movie(String title, String director, int releaseYear, String genre) {
         this.title = title;
         this.director = director;
         this.releaseYear = releaseYear;
@@ -33,5 +55,26 @@ public class Movie {
 
     public String getGenre() {
         return genre;
+    }
+
+    // Сеттеры
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 }

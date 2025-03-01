@@ -9,6 +9,10 @@ public interface MovieService {
 
     List<Movie> findAll();
 
-    Optional<Movie> findByQueryParams(Long id, String title, String director,
-                                      int releaseYear, String genre);
+    List<Movie> findByQueryParams(Long id, String title,
+                                  String director, int releaseYear, String genre);
+
+    Movie save(Movie movie);
+
+    void deleteById(Long id);
 }
