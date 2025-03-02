@@ -1,10 +1,10 @@
 package com.matvey.cinema.repository;
 
-import com.matvey.cinema.model.Movie;
+import com.matvey.cinema.model.Theater;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MovieRepository extends JpaRepository<Movie, Long> {
+public interface TheaterRepository extends JpaRepository<Theater, Long> {
     // Здесь можно добавлять дополнительные методы, если нужно
 }

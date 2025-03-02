@@ -1,11 +1,15 @@
 package com.matvey.cinema.model;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "movies") // Указывает, что эта сущность соответствует таблице "movies"
@@ -13,17 +17,9 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения id
     private Long id; // Уникальный идентификатор фильма
-
-    @Column(name = "title", nullable = false)
     private String title; // Название фильма
-
-    @Column(name = "director", nullable = false)
     private String director; // Режиссер
-
-    @Column(name = "release_year", nullable = false)
     private int releaseYear; // Год выпуска
-
-    @Column(name = "genre", nullable = false)
     private String genre; // Жанр
 
     // Пустой конструктор необходим для JPA
@@ -37,41 +33,41 @@ public class Movie {
         this.genre = genre;
     }
 
+    // Геттеры и сеттеры
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getDirector() {
-        return director;
-    }
-
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    // Сеттеры
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDirector() {
+        return director;
     }
 
     public void setDirector(String director) {
         this.director = director;
     }
 
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
     public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
+    }
+
+    public String getGenre() {
+        return genre;
     }
 
     public void setGenre(String genre) {
