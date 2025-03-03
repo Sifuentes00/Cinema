@@ -1,6 +1,6 @@
 package com.matvey.cinema.service;
 
-import com.matvey.cinema.model.Review;
+import com.matvey.cinema.model.entities.Review;
 import java.util.List;
 import java.util.Optional;
 

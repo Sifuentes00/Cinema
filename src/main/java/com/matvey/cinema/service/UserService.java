@@ -1,6 +1,6 @@
 package com.matvey.cinema.service;
 
-import com.matvey.cinema.model.User;
+import com.matvey.cinema.model.entities.User;
 import java.util.List;
 import java.util.Optional;
 

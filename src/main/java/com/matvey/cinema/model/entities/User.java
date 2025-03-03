@@ -1,4 +1,4 @@
-package com.matvey.cinema.model;
+package com.matvey.cinema.model.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -14,28 +14,23 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "users") // Указывает, что эта сущность соответствует таблице "users"
+@Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Автоматическая генерация значения id
-    private Long id; // Уникальный идентификатор пользователя
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String username; // Имя пользователя
-    private String email; // Электронная почта пользователя
+    private String username;
+    private String email;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private List<Account> accounts = new ArrayList<>(); // Аккаунты пользователя
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") // Внешний ключ в таблице tickets
     private List<Ticket> tickets = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") // Внешний ключ в таблице reviews
+    @JoinColumn(name = "user_id")
     private List<Review> reviews = new ArrayList<>();
 
-    // Пустой конструктор необходим для JPA
     public User() {
     }
 
@@ -44,7 +39,6 @@ public class User {
         this.email = email;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }

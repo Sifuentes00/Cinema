@@ -1,6 +1,6 @@
 package com.matvey.cinema.repository;
 
-import com.matvey.cinema.model.User;
+import com.matvey.cinema.model.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

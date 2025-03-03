@@ -1,6 +1,6 @@
 package com.matvey.cinema.service;
 
-import com.matvey.cinema.model.Ticket;
+import com.matvey.cinema.model.entities.Ticket;
 import java.util.List;
 import java.util.Optional;
 

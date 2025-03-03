@@ -1,6 +1,6 @@
 package com.matvey.cinema.service.impl;
 
-import com.matvey.cinema.model.Showtime;
+import com.matvey.cinema.model.entities.Showtime;
 import com.matvey.cinema.repository.ShowtimeRepository;
 import com.matvey.cinema.service.ShowtimeService;
 import java.util.List;

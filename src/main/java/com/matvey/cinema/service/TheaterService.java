@@ -1,6 +1,7 @@
 package com.matvey.cinema.service;
 
-import com.matvey.cinema.model.Theater;
+import com.matvey.cinema.model.dto.TheaterRequest;
+import com.matvey.cinema.model.entities.Theater;
 import java.util.List;
 import java.util.Optional;
 

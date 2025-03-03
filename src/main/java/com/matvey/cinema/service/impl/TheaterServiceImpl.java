@@ -1,6 +1,6 @@
 package com.matvey.cinema.service.impl;
 
-import com.matvey.cinema.model.Theater;
+import com.matvey.cinema.model.entities.Theater;
 import com.matvey.cinema.repository.TheaterRepository;
 import com.matvey.cinema.service.TheaterService;
 import java.util.List;
