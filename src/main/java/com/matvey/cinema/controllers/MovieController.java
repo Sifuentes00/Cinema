@@ -60,7 +60,7 @@ public class MovieController {
         movie.setDirector(movieRequest.getDirector());
         movie.setReleaseYear(movieRequest.getReleaseYear());
         movie.setGenre(movieRequest.getGenre());
-        
+
         List<Review> reviews = new ArrayList<>();
         for (Long reviewId : movieRequest.getReviewIds()) {
             Optional<Review> reviewOptional = reviewService.findById(reviewId);
