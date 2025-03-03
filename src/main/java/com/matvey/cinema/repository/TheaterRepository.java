@@ -24,11 +24,7 @@ public interface TheaterRepository extends JpaRepository<Theater, Long> {
         List<Seat> seats = new ArrayList<>();
         for (Long seatId : theaterRequest.getSeatIds()) {
             Optional<Seat> seatOptional = seatService.findById(seatId);
-            if (seatOptional.isPresent()) {
-                seats.add(seatOptional.get());
-            } else {
-                throw new RuntimeException("Место не найдено с ID: " + seatId);
-            }
+            seatOptional.ifPresent(seats::add);
         }
         theater.setSeats(seats);
 
@@ -36,14 +32,8 @@ public interface TheaterRepository extends JpaRepository<Theater, Long> {
         List<Showtime> showtimes = new ArrayList<>();
         for (Long showtimeId : theaterRequest.getShowtimeIds()) {
             Optional<Showtime> showtimeOptional = showtimeService.findById(showtimeId);
-            if (showtimeOptional.isPresent()) {
-                showtimes.add(showtimeOptional.get());
-            } else {
-                throw new RuntimeException("Сеанс не найден с ID: " + showtimeId);
-            }
+            showtimeOptional.ifPresent(showtimes::add);
         }
         theater.setShowtimes(showtimes);
     }
-
-
 }
