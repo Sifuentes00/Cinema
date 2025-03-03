@@ -34,12 +34,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         List<Showtime> showtimes = new ArrayList<>();
         for (Long showtimeId : movieRequest.getShowtimeIds()) {
             Optional<Showtime> showtimeOptional = showtimeService.findById(showtimeId);
-            if (showtimeOptional.isPresent()) {
-                showtimes.add(showtimeOptional.get());
-            } else {
-                throw new RuntimeException("Showtime not found with id: " + showtimeId);
-            }
+            showtimeOptional.ifPresent(showtimes::add); // Добавляем сеанс, если он найден
         }
         movie.setShowtimes(showtimes);
     }
 }
+

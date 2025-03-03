@@ -1,9 +1,7 @@
 package com.matvey.cinema.controllers;
 
 import com.matvey.cinema.model.dto.ReviewRequest;
-import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.model.entities.Review;
-import com.matvey.cinema.model.entities.User;
 import com.matvey.cinema.repository.ReviewRepository;
 import com.matvey.cinema.service.MovieService;
 import com.matvey.cinema.service.ReviewService;
