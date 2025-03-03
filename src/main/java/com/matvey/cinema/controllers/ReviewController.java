@@ -4,6 +4,7 @@ import com.matvey.cinema.model.dto.ReviewRequest;
 import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.model.entities.Review;
 import com.matvey.cinema.model.entities.User;
+import com.matvey.cinema.repository.ReviewRepository;
 import com.matvey.cinema.service.MovieService;
 import com.matvey.cinema.service.ReviewService;
 import com.matvey.cinema.service.UserService;
@@ -25,12 +26,14 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final MovieService movieService;
     private final UserService userService;
+    private final ReviewRepository reviewRepository;
 
     public ReviewController(ReviewService reviewService, MovieService movieService,
-                            UserService userService) {
+                            UserService userService, ReviewRepository reviewRepository) {
         this.reviewService = reviewService;
         this.movieService = movieService;
         this.userService = userService;
+        this.reviewRepository = reviewRepository;
     }
 
     @GetMapping("/{id}")
@@ -48,31 +51,11 @@ public class ReviewController {
 
     @PostMapping("/with")
     public ResponseEntity<Review> createReview(@RequestBody ReviewRequest reviewRequest) {
-        // Найти фильм по ID
-        Movie movie = movieService.findById(reviewRequest.getMovieId())
-                .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: "
-                        + reviewRequest.getMovieId()));
-
-        // Найти пользователя по ID
-        User user = userService.findById(reviewRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден с ID: "
-                        + reviewRequest.getUserId()));
-
         // Создать новый отзыв
         Review review = new Review();
-        review.setContent(reviewRequest.getContent());
 
-        // Добавить отзыв в список отзывов пользователя
-        user.getReviews().add(review);
-
-        // Добавить отзыв в список отзывов фильма
-        movie.getReviews().add(review);
-
-        // Сохранить пользователя (каскадно сохранит отзыв)
-        userService.save(user);
-
-        // Сохранить фильм
-        movieService.save(movie);
+        // Ассоциировать отзыв с фильмом и пользователем
+        reviewRepository.updateReviewDetails(review, reviewRequest, movieService, userService);
 
         return ResponseEntity.ok(review);
     }
@@ -101,34 +84,9 @@ public class ReviewController {
         Review existingReview = reviewService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Отзыв не найден с ID: " + id));
 
-        // Найти фильм по ID
-        Movie movie = movieService.findById(reviewRequest.getMovieId())
-                .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: "
-                        + reviewRequest.getMovieId()));
-
-        // Найти пользователя по ID
-        User user = userService.findById(reviewRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден с ID: "
-                        + reviewRequest.getUserId()));
-
-        // Обновить содержимое отзыва
-        existingReview.setContent(reviewRequest.getContent());
-
-        // Убедиться, что отзыв связан с пользователем
-        if (!user.getReviews().contains(existingReview)) {
-            user.getReviews().add(existingReview);
-        }
-
-        // Убедиться, что отзыв связан с фильмом
-        if (!movie.getReviews().contains(existingReview)) {
-            movie.getReviews().add(existingReview);
-        }
-
-        // Сохранить пользователя (каскадно сохранит отзыв)
-        userService.save(user);
-
-        // Сохранить фильм
-        movieService.save(movie);
+        // Ассоциировать отзыв с фильмом и пользователем
+        reviewRepository.updateReviewDetails(existingReview, reviewRequest,
+                                                movieService, userService);
 
         // Возвращаем обновленный отзыв
         return ResponseEntity.ok(existingReview);

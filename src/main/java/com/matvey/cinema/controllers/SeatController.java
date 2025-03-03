@@ -2,12 +2,10 @@ package com.matvey.cinema.controllers;
 
 import com.matvey.cinema.model.dto.SeatRequest;
 import com.matvey.cinema.model.entities.Seat;
-import com.matvey.cinema.model.entities.Theater;
-import com.matvey.cinema.model.entities.Ticket;
+import com.matvey.cinema.repository.SeatRepository;
 import com.matvey.cinema.service.SeatService;
 import com.matvey.cinema.service.TheaterService;
 import com.matvey.cinema.service.TicketService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +24,14 @@ public class SeatController {
     private final SeatService seatService;
     private final TheaterService theaterService;
     private final TicketService ticketService;
+    private final SeatRepository seatRepository;
 
     public SeatController(SeatService seatService, TheaterService theaterService,
-                          TicketService ticketService) {
+                          TicketService ticketService, SeatRepository seatRepository) {
         this.seatService = seatService;
         this.theaterService = theaterService;
         this.ticketService = ticketService;
+        this.seatRepository = seatRepository;
     }
 
     @GetMapping("/{id}")
@@ -50,27 +50,11 @@ public class SeatController {
     @PostMapping("/with")
     public ResponseEntity<Seat> createSeat(@RequestBody SeatRequest seatRequest) {
         Seat seat = new Seat();
-        seat.setSeatRow(seatRequest.getSeatRow());
-        seat.setNumber(seatRequest.getNumber());
-        seat.setAvailable(seatRequest.isAvailable());
 
-        // Найти театр по ID
-        Theater theater = theaterService.findById(seatRequest.getTheaterId())
-                .orElseThrow(() -> new RuntimeException("Театр не найден с ID: "
-                        + seatRequest.getTheaterId()));
-        // Установить связь с театром
-        theater.getSeats().add(seat);
+        // Ассоциировать место с театром и билетами
+        seatRepository.updateSeatDetails(seat, seatRequest, theaterService, ticketService);
 
-        List<Ticket> tickets = new ArrayList<>();
-        for (Long ticketId : seatRequest.getTicketIds()) {
-            Optional<Ticket> ticketOptional = ticketService.findById(ticketId);
-            ticketOptional.ifPresent(tickets::add); // Добавляем билет, если он найден
-        }
-        seat.setTickets(tickets);
-
-        // Сохранить изменения
-        theaterService.save(theater);
-
+        // Сохранить место
         Seat createdSeat = seatService.save(seat);
 
         return ResponseEntity.ok(createdSeat);
@@ -98,30 +82,8 @@ public class SeatController {
         Seat existingSeat = seatService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Место не найдено с ID: " + id));
 
-        // Обновить данные места
-        existingSeat.setSeatRow(seatRequest.getSeatRow());
-        existingSeat.setNumber(seatRequest.getNumber());
-        existingSeat.setAvailable(seatRequest.isAvailable());
-
-        // Найти театр по ID
-        Theater theater = theaterService.findById(seatRequest.getTheaterId())
-                .orElseThrow(() -> new RuntimeException("Театр не найден с ID: "
-                        + seatRequest.getTheaterId()));
-
-        if (!theater.getSeats().contains(existingSeat)) {
-            theater.getSeats().add(existingSeat);
-        }
-
-        // Получить существующие билеты по ID
-        List<Ticket> tickets = new ArrayList<>();
-        for (Long ticketId : seatRequest.getTicketIds()) {
-            Optional<Ticket> ticketOptional = ticketService.findById(ticketId);
-            ticketOptional.ifPresent(tickets::add); // Добавляем билет, если он найден
-        }
-        existingSeat.setTickets(tickets);
-
-        // Сохранить театр (каскадно сохранит место)
-        theaterService.save(theater);
+        // Ассоциировать существующее место с театром и билетами
+        seatRepository.updateSeatDetails(existingSeat, seatRequest, theaterService, ticketService);
 
         // Сохранить место
         Seat updatedSeat = seatService.save(existingSeat);

@@ -1,10 +1,8 @@
 package com.matvey.cinema.controllers;
 
 import com.matvey.cinema.model.dto.TicketRequest;
-import com.matvey.cinema.model.entities.Seat;
-import com.matvey.cinema.model.entities.Showtime;
 import com.matvey.cinema.model.entities.Ticket;
-import com.matvey.cinema.model.entities.User;
+import com.matvey.cinema.repository.TicketRepository;
 import com.matvey.cinema.service.SeatService;
 import com.matvey.cinema.service.ShowtimeService;
 import com.matvey.cinema.service.TicketService;
@@ -28,13 +26,16 @@ public class TicketController {
     private final SeatService seatService;
     private final UserService userService;
     private final ShowtimeService showtimeService;
+    private final TicketRepository ticketRepository;
 
     public TicketController(TicketService ticketService, SeatService seatService,
-                            UserService userService, ShowtimeService showtimeService) {
+                            UserService userService, ShowtimeService showtimeService,
+                            TicketRepository ticketRepository) {
         this.ticketService = ticketService;
         this.seatService = seatService;
         this.userService = userService;
         this.showtimeService = showtimeService;
+        this.ticketRepository = ticketRepository;
     }
 
     @GetMapping("/{id}")
@@ -61,32 +62,14 @@ public class TicketController {
 
     @PostMapping("/with")
     public ResponseEntity<Ticket> createTicket(@RequestBody TicketRequest ticketRequest) {
-        // Находим Showtime, Seat и User по их ID
-        Showtime showtime = showtimeService.findById(ticketRequest.getShowtimeId())
-                .orElseThrow(() -> new RuntimeException("Showtime not found with id: "
-                        + ticketRequest.getShowtimeId()));
-        Seat seat = seatService.findById(ticketRequest.getSeatId())
-                .orElseThrow(() -> new RuntimeException("Seat not found with id: "
-                        + ticketRequest.getSeatId()));
-
-
-
         Ticket ticket = new Ticket();
-        ticket.setPrice(ticketRequest.getPrice());
 
+        // Ассоциировать билет с сеансом, местом и пользователем
+        ticketRepository.updateTicketDetails(ticket, ticketRequest,
+                showtimeService, seatService, userService);
+
+        // Сохраняем новый билет
         Ticket savedTicket = ticketService.save(ticket);
-
-        User user = userService.findById(ticketRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: "
-                        + ticketRequest.getUserId()));
-        showtime.getTickets().add(savedTicket);
-        seat.getTickets().add(savedTicket);
-        user.getTickets().add(savedTicket);
-
-        // Сохраняем обновленные сущности
-        showtimeService.save(showtime);
-        seatService.save(seat);
-        userService.save(user);
 
         return ResponseEntity.ok(savedTicket);
     }
@@ -101,36 +84,16 @@ public class TicketController {
     @PutMapping("/with/{id}")
     public ResponseEntity<Ticket> updateTicket(@PathVariable Long id,
                                                @RequestBody TicketRequest ticketRequest) {
-        // Находим Ticket по его ID
         Ticket existingTicket = ticketService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + id));
 
-        // Находим Showtime, Seat и User по их ID
-        Showtime newShowtime = showtimeService.findById(ticketRequest.getShowtimeId())
-                .orElseThrow(() -> new RuntimeException("Showtime not found with id: "
-                        + ticketRequest.getShowtimeId()));
-        Seat newSeat = seatService.findById(ticketRequest.getSeatId())
-                .orElseThrow(() -> new RuntimeException("Seat not found with id: "
-                        + ticketRequest.getSeatId()));
+        ticketRepository.updateTicketDetails(existingTicket, ticketRequest,
+                showtimeService, seatService, userService);
 
-        existingTicket.setPrice(ticketRequest.getPrice());
+        Ticket updatedTicket = ticketService.save(existingTicket);
 
-        User newUser = userService.findById(ticketRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: "
-                        + ticketRequest.getUserId()));
-        newShowtime.getTickets().add(existingTicket);
-        newSeat.getTickets().add(existingTicket);
-        newUser.getTickets().add(existingTicket);
-
-        ticketService.save(existingTicket);
-        showtimeService.save(newShowtime);
-        seatService.save(newSeat);
-        userService.save(newUser);
-
-        return ResponseEntity.ok(existingTicket);
+        return ResponseEntity.ok(updatedTicket);
     }
-
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {

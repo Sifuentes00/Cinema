@@ -1,15 +1,12 @@
 package com.matvey.cinema.controllers;
 
 import com.matvey.cinema.model.dto.ShowtimeRequest;
-import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.model.entities.Showtime;
-import com.matvey.cinema.model.entities.Theater;
-import com.matvey.cinema.model.entities.Ticket;
+import com.matvey.cinema.repository.ShowtimeRepository;
 import com.matvey.cinema.service.MovieService;
 import com.matvey.cinema.service.ShowtimeService;
 import com.matvey.cinema.service.TheaterService;
 import com.matvey.cinema.service.TicketService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +26,16 @@ public class ShowtimeController {
     private final MovieService movieService;
     private final TheaterService theaterService;
     private final TicketService ticketService;
+    private final ShowtimeRepository showtimeRepository;
 
     public ShowtimeController(ShowtimeService showtimeService, MovieService movieService,
-                              TheaterService theaterService, TicketService ticketService) {
+                              TheaterService theaterService, TicketService ticketService,
+                              ShowtimeRepository showtimeRepository) {
         this.showtimeService = showtimeService;
         this.movieService = movieService;
         this.theaterService = theaterService;
         this.ticketService = ticketService;
+        this.showtimeRepository = showtimeRepository;
     }
 
     @GetMapping("/{id}")
@@ -60,31 +60,13 @@ public class ShowtimeController {
     @PostMapping("/with")
     public ResponseEntity<Showtime> createShowtime(@RequestBody ShowtimeRequest showtimeRequest) {
         Showtime showtime = new Showtime();
-        showtime.setDateTime(showtimeRequest.getDateTime());
-        showtime.setType(showtimeRequest.getType());
 
-        List<Ticket> tickets = new ArrayList<>();
-        for (Long ticketId : showtimeRequest.getTicketIds()) {
-            Optional<Ticket> ticketOptional = ticketService.findById(ticketId);
-            ticketOptional.ifPresent(tickets::add); // Добавляем билет, если он найден
-        }
-        showtime.setTickets(tickets);
+        // Ассоциировать сеанс с фильмом, театром и билетами
+        showtimeRepository.updateShowtimeDetails(showtime, showtimeRequest,
+                movieService, theaterService, ticketService);
 
+        // Сохранить сеанс
         Showtime savedShowtime = showtimeService.save(showtime);
-
-        Movie movie = movieService.findById(showtimeRequest.getMovieId())
-                .orElseThrow(() -> new RuntimeException("Movie not found with id: "
-                        + showtimeRequest.getMovieId()));
-
-        Theater theater = theaterService.findById(showtimeRequest.getTheaterId())
-                .orElseThrow(() -> new RuntimeException("Theater not found with id: "
-                        + showtimeRequest.getTheaterId()));
-
-        movie.getShowtimes().add(savedShowtime);
-        theater.getShowtimes().add(savedShowtime);
-
-        movieService.save(movie);
-        theaterService.save(theater);
 
         return ResponseEntity.ok(savedShowtime);
     }
@@ -106,39 +88,9 @@ public class ShowtimeController {
         Showtime existingShowtime = showtimeService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Сеанс не найден с ID: " + id));
 
-        // Найти фильм по ID
-        Movie movie = movieService.findById(showtimeRequest.getMovieId())
-                .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: "
-                        + showtimeRequest.getMovieId()));
-
-        existingShowtime.setDateTime(showtimeRequest.getDateTime());
-        existingShowtime.setType(showtimeRequest.getType());
-
-        // Убедиться, что сеанс связан с фильмом
-        if (!movie.getShowtimes().contains(existingShowtime)) {
-            movie.getShowtimes().add(existingShowtime);
-        }
-
-        Theater theater = theaterService.findById(showtimeRequest.getTheaterId())
-                .orElseThrow(() -> new RuntimeException("Театр не найден с ID: "
-                        + showtimeRequest.getTheaterId()));
-        if (!theater.getShowtimes().contains(existingShowtime)) {
-            theater.getShowtimes().add(existingShowtime);
-        }
-
-        // Получить существующие билеты по ID
-        List<Ticket> tickets = new ArrayList<>();
-        for (Long ticketId : showtimeRequest.getTicketIds()) {
-            Optional<Ticket> ticketOptional = ticketService.findById(ticketId);
-            ticketOptional.ifPresent(tickets::add); // Добавляем билет, если он найден
-        }
-        existingShowtime.setTickets(tickets);
-
-        // Сохранить фильм (каскадно сохранит сеанс)
-        movieService.save(movie);
-
-        // Сохранить театр
-        theaterService.save(theater);
+        // Ассоциировать существующий сеанс с фильмом, театром и билетами
+        showtimeRepository.updateShowtimeDetails(existingShowtime, showtimeRequest,
+                movieService, theaterService, ticketService);
 
         // Сохранить сеанс
         Showtime updatedShowtime = showtimeService.save(existingShowtime);
