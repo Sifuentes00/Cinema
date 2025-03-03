@@ -10,23 +10,11 @@ public class ReviewRequest {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public Long getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(Long movieId) {
-        this.movieId = movieId;
-    }
-
     public Long getUserId() {
         return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

@@ -78,11 +78,9 @@ public class ReviewController {
             @PathVariable Long id, // ID отзыва, который нужно обновить
             @RequestBody ReviewRequest reviewRequest) {
 
-        // Найти существующий отзыв по ID
         Review existingReview = reviewService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Отзыв не найден с ID: " + id));
 
-        // Ассоциировать отзыв с фильмом и пользователем
         reviewRepository.updateReviewDetails(existingReview, reviewRequest,
                                                 movieService, userService);
 

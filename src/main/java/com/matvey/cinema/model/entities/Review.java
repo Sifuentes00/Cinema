@@ -22,7 +22,6 @@ public class Review {
         this.content = content;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
