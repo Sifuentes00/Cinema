@@ -75,7 +75,7 @@ public class ReviewController {
 
     @PutMapping("/with/{id}")
     public ResponseEntity<Review> updateReviewWithUserAndMovie(
-            @PathVariable Long id, // ID отзыва, который нужно обновить
+            @PathVariable Long id,
             @RequestBody ReviewRequest reviewRequest) {
 
         Review existingReview = reviewService.findById(id)
@@ -84,7 +84,6 @@ public class ReviewController {
         reviewRepository.updateReviewDetails(existingReview, reviewRequest,
                                                 movieService, userService);
 
-        // Возвращаем обновленный отзыв
         return ResponseEntity.ok(existingReview);
     }
 
