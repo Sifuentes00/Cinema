@@ -22,7 +22,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         movie.setReleaseYear(movieRequest.getReleaseYear());
         movie.setGenre(movieRequest.getGenre());
 
-        // Получаем существующие отзывы по ID
         List<Review> reviews = new ArrayList<>();
         for (Long reviewId : movieRequest.getReviewIds()) {
             Optional<Review> reviewOptional = reviewService.findById(reviewId);
@@ -30,7 +29,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         }
         movie.setReviews(reviews);
 
-        // Получаем существующие сеансы по ID
         List<Showtime> showtimes = new ArrayList<>();
         for (Long showtimeId : movieRequest.getShowtimeIds()) {
             Optional<Showtime> showtimeOptional = showtimeService.findById(showtimeId);

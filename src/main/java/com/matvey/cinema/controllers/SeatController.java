@@ -51,10 +51,8 @@ public class SeatController {
     public ResponseEntity<Seat> createSeat(@RequestBody SeatRequest seatRequest) {
         Seat seat = new Seat();
 
-        // Ассоциировать место с театром и билетами
         seatRepository.updateSeatDetails(seat, seatRequest, theaterService, ticketService);
 
-        // Сохранить место
         Seat createdSeat = seatService.save(seat);
 
         return ResponseEntity.ok(createdSeat);
@@ -75,20 +73,16 @@ public class SeatController {
 
     @PutMapping("/with/{id}")
     public ResponseEntity<Seat> updateSeatWithTheaterAndTickets(
-            @PathVariable Long id, // ID места, которое нужно обновить
+            @PathVariable Long id,
             @RequestBody SeatRequest seatRequest) {
 
-        // Найти существующее место по ID
         Seat existingSeat = seatService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Место не найдено с ID: " + id));
 
-        // Ассоциировать существующее место с театром и билетами
         seatRepository.updateSeatDetails(existingSeat, seatRequest, theaterService, ticketService);
 
-        // Сохранить место
         Seat updatedSeat = seatService.save(existingSeat);
 
-        // Возвращаем обновленное место
         return ResponseEntity.ok(updatedSeat);
     }
 

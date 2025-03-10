@@ -66,7 +66,6 @@ public class Showtime {
         this.tickets = tickets;
     }
 
-    // Метод для добавления билета
     public void addTicket(Ticket ticket) {
         tickets.add(ticket);
     }

@@ -30,7 +30,6 @@ public class Theater {
     @JoinColumn(name = "theater_id")
     private List<Showtime> showtimes = new ArrayList<>();
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -71,14 +70,12 @@ public class Theater {
         this.showtimes = showtimes;
     }
 
-    // Метод для добавления существующих мест
     public void addSeat(Seat seat) {
         if (!seats.contains(seat)) {
             seats.add(seat);
         }
     }
 
-    // Метод для добавления сеансов
     public void addShowtime(Showtime showtime) {
         if (!showtimes.contains(showtime)) {
             showtimes.add(showtime);

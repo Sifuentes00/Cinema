@@ -61,13 +61,11 @@ public class MovieController {
         return ResponseEntity.ok(savedMovie);
     }
 
-    // Обновить существующий фильм
     @PutMapping("/{id}")
     public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Movie movie) {
-        // Устанавливаем ID для обновляемого фильма
         movie.setId(id);
         Movie updatedMovie = movieService.save(movie);
-        return ResponseEntity.ok(updatedMovie); // Возвращаем обновленный фильм
+        return ResponseEntity.ok(updatedMovie);
     }
 
     @PutMapping("/with/{id}")
@@ -75,23 +73,20 @@ public class MovieController {
             @PathVariable Long id,
             @RequestBody MovieRequest movieRequest) {
 
-        // Находим существующий фильм по ID
         Movie existingMovie = movieService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: " + id));
 
         movieRepository.updateMovieDetails(existingMovie, movieRequest, reviewService,
                                             showtimeService);
 
-        // Сохраняем обновленный фильм
         Movie updatedMovie = movieService.save(existingMovie);
         return ResponseEntity.ok(updatedMovie);
     }
 
-    // Удалить фильм по ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
         movieService.deleteById(id);
-        return ResponseEntity.noContent().build(); // Возвращаем статус 204 No Content
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -53,10 +53,8 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
-        // Сохраняем Ticket
         Ticket savedTicket = ticketService.save(ticket);
 
-        // Возвращаем созданный Ticket с HTTP-статусом 200 OK
         return ResponseEntity.ok(savedTicket);
     }
 
@@ -64,11 +62,9 @@ public class TicketController {
     public ResponseEntity<Ticket> createTicket(@RequestBody TicketRequest ticketRequest) {
         Ticket ticket = new Ticket();
 
-        // Ассоциировать билет с сеансом, местом и пользователем
         ticketRepository.updateTicketDetails(ticket, ticketRequest,
                 showtimeService, seatService, userService);
 
-        // Сохраняем новый билет
         Ticket savedTicket = ticketService.save(ticket);
 
         return ResponseEntity.ok(savedTicket);

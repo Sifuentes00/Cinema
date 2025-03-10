@@ -10,7 +10,6 @@ public class MovieRequest {
     private List<Long> reviewIds;
     private List<Long> showtimeIds;
 
-    // Геттеры и сеттеры
     public String getTitle() {
         return title;
     }

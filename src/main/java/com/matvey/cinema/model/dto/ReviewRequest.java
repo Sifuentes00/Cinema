@@ -5,7 +5,6 @@ public class ReviewRequest {
     private Long movieId;
     private Long userId;
 
-    // Геттеры и сеттеры
     public String getContent() {
         return content;
     }

@@ -49,16 +49,13 @@ public class ReviewController {
 
     @PostMapping("/with")
     public ResponseEntity<Review> createReview(@RequestBody ReviewRequest reviewRequest) {
-        // Создать новый отзыв
         Review review = new Review();
 
-        // Ассоциировать отзыв с фильмом и пользователем
         reviewRepository.updateReviewDetails(review, reviewRequest, movieService, userService);
 
         return ResponseEntity.ok(review);
     }
 
-    // Новый метод для создания отзыва без указания ID фильма
     @PostMapping
     public ResponseEntity<Review> createReviewWithoutMovieId(@RequestBody Review review) {
         Review createdReview = reviewService.save(review);

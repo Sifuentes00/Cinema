@@ -51,13 +51,11 @@ public class TheaterController {
     public ResponseEntity<Theater> createTheater(@RequestBody TheaterRequest theaterRequest) {
         Theater theater = new Theater();
 
-        // Ассоциировать театр с местами и сеансами
         theaterRepository.updateTheaterDetails(theater, theaterRequest,
                 seatService, showtimeService);
 
-        // Сохранить новый театр
         Theater createdTheater = theaterService.save(theater);
-        return ResponseEntity.ok(createdTheater); // Возвращаем созданный театр
+        return ResponseEntity.ok(createdTheater);
     }
 
     @PostMapping
@@ -79,7 +77,7 @@ public class TheaterController {
                                                  @RequestBody TheaterRequest theaterRequest) {
         Optional<Theater> theaterOptional = theaterService.findById(id);
         if (!theaterOptional.isPresent()) {
-            return ResponseEntity.notFound().build(); // Если театр не найден, возвращаем 404
+            return ResponseEntity.notFound().build();
         }
 
         Theater theater = theaterOptional.get();

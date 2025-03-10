@@ -61,11 +61,9 @@ public class ShowtimeController {
     public ResponseEntity<Showtime> createShowtime(@RequestBody ShowtimeRequest showtimeRequest) {
         Showtime showtime = new Showtime();
 
-        // Ассоциировать сеанс с фильмом, театром и билетами
         showtimeRepository.updateShowtimeDetails(showtime, showtimeRequest,
                 movieService, theaterService, ticketService);
 
-        // Сохранить сеанс
         Showtime savedShowtime = showtimeService.save(showtime);
 
         return ResponseEntity.ok(savedShowtime);
@@ -81,21 +79,17 @@ public class ShowtimeController {
 
     @PutMapping("/with/{id}")
     public ResponseEntity<Showtime> updateShowtimeWithMovieAndTheater(
-            @PathVariable Long id, // ID сеанса, который нужно обновить
+            @PathVariable Long id,
             @RequestBody ShowtimeRequest showtimeRequest) {
 
-        // Найти существующий сеанс по ID
         Showtime existingShowtime = showtimeService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Сеанс не найден с ID: " + id));
 
-        // Ассоциировать существующий сеанс с фильмом, театром и билетами
         showtimeRepository.updateShowtimeDetails(existingShowtime, showtimeRequest,
                 movieService, theaterService, ticketService);
 
-        // Сохранить сеанс
         Showtime updatedShowtime = showtimeService.save(existingShowtime);
 
-        // Возвращаем обновленный сеанс
         return ResponseEntity.ok(updatedShowtime);
     }
 

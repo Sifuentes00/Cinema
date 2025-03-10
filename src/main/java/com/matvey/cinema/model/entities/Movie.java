@@ -88,14 +88,12 @@ public class Movie {
         this.showtimes = showtimes;
     }
 
-    // Метод для добавления отзывов
     public void addReview(Review review) {
         if (!reviews.contains(review)) {
             reviews.add(review);
         }
     }
 
-    // Метод для добавления сеансов
     public void addShowtime(Showtime showtime) {
         if (!showtimes.contains(showtime)) {
             showtimes.add(showtime);

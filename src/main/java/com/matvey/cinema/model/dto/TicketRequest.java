@@ -6,7 +6,6 @@ public class TicketRequest {
     private Long userId;
     private Long seatId;
 
-    // Геттеры и сеттеры
     public double getPrice() {
         return price;
     }

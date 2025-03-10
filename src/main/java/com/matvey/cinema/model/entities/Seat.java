@@ -38,7 +38,6 @@ public class Seat {
         this.isAvailable = isAvailable;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -79,7 +78,6 @@ public class Seat {
         this.tickets = tickets;
     }
 
-    // Метод для добавления билета
     public void addTicket(Ticket ticket) {
         tickets.add(ticket);
     }
