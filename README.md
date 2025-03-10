@@ -20,7 +20,9 @@ http://localhost:8080/api/query?title=Inception&director=Nolan&releaseYear=2010&
 2. С использованием параметров пути:
 http://localhost:8080/api/path/Inception/Nolan/2010/Sci-Fi
 
-## Пример ответа
+Также подключена база данных MySQL и реализованы CRUD операции
+
+## Пример ответа GET-запроса
 json
 {
 "title": "Inception",
