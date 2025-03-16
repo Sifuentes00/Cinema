@@ -30,8 +30,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             movie.getReviews().add(review);
         }
 
-        userService.save(user);
-        movieService.save(movie);
+
     }
 
 }

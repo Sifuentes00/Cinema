@@ -33,10 +33,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
         seat.getTickets().add(ticket);
         user.getTickets().add(ticket);
 
-        // Сохраняем обновленные сущности
-        showtimeService.save(showtime);
-        seatService.save(seat);
-        userService.save(user);
+
     }
 
 }

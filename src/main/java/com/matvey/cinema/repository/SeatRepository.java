@@ -39,7 +39,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
         }
         seat.setTickets(tickets);
 
-        // Сохранить изменения
-        theaterService.save(theater);
+
     }
 }

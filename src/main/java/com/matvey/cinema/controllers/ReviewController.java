@@ -53,7 +53,9 @@ public class ReviewController {
 
         reviewRepository.updateReviewDetails(review, reviewRequest, movieService, userService);
 
-        return ResponseEntity.ok(review);
+        Review createdReview = reviewRepository.save(review);
+
+        return ResponseEntity.ok(createdReview);
     }
 
     @PostMapping

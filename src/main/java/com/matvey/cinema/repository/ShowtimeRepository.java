@@ -51,8 +51,6 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
             theater.getShowtimes().add(showtime);
         }
 
-        // Сохранить изменения
-        movieService.save(movie);
-        theaterService.save(theater);
+
     }
 }
