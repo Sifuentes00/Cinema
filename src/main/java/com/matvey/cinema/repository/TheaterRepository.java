@@ -16,11 +16,9 @@ import org.springframework.stereotype.Repository;
 public interface TheaterRepository extends JpaRepository<Theater, Long> {
     default void updateTheaterDetails(Theater theater, TheaterRequest theaterRequest,
                                       SeatService seatService, ShowtimeService showtimeService) {
-        // Обновляем данные театра
         theater.setName(theaterRequest.getName());
         theater.setCapacity(theaterRequest.getCapacity());
 
-        // Получаем существующие места по их ID
         List<Seat> seats = new ArrayList<>();
         for (Long seatId : theaterRequest.getSeatIds()) {
             Optional<Seat> seatOptional = seatService.findById(seatId);
@@ -28,7 +26,6 @@ public interface TheaterRepository extends JpaRepository<Theater, Long> {
         }
         theater.setSeats(seats);
 
-        // Получаем существующие сеансы по их ID
         List<Showtime> showtimes = new ArrayList<>();
         for (Long showtimeId : theaterRequest.getShowtimeIds()) {
             Optional<Showtime> showtimeOptional = showtimeService.findById(showtimeId);

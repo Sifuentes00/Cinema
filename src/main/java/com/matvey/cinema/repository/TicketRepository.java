@@ -16,7 +16,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     default void updateTicketDetails(Ticket ticket, TicketRequest ticketRequest,
                                      ShowtimeService showtimeService, SeatService seatService,
                                      UserService userService) {
-        // Находим Showtime, Seat и User по их ID
         Showtime showtime = showtimeService.findById(ticketRequest.getShowtimeId())
                 .orElseThrow(() -> new RuntimeException("Showtime not found with id: "
                         + ticketRequest.getShowtimeId()));
@@ -32,8 +31,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
         showtime.getTickets().add(ticket);
         seat.getTickets().add(ticket);
         user.getTickets().add(ticket);
-
-
     }
-
 }

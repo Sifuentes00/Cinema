@@ -38,7 +38,7 @@ public class MovieServiceImpl implements MovieService {
                         && (director == null || movie.getDirector().equalsIgnoreCase(director))
                         && (releaseYear == 0 || movie.getReleaseYear() == releaseYear)
                         && (genre == null || movie.getGenre().equalsIgnoreCase(genre)))
-                .toList(); // Возвращаем отфильтрованный список
+                .toList();
     }
 
     @Override

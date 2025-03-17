@@ -19,38 +19,30 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     default void updateShowtimeDetails(Showtime showtime, ShowtimeRequest showtimeRequest,
                                        MovieService movieService, TheaterService theaterService,
                                        TicketService ticketService) {
-        // Обновляем данные сеанса
         showtime.setDateTime(showtimeRequest.getDateTime());
         showtime.setType(showtimeRequest.getType());
 
-        // Получаем существующие билеты по ID
         List<Ticket> tickets = new ArrayList<>();
         for (Long ticketId : showtimeRequest.getTicketIds()) {
             Optional<Ticket> ticketOptional = ticketService.findById(ticketId);
-            ticketOptional.ifPresent(tickets::add); // Добавляем билет, если он найден
+            ticketOptional.ifPresent(tickets::add);
         }
         showtime.setTickets(tickets);
 
-        // Найти фильм по ID
         Movie movie = movieService.findById(showtimeRequest.getMovieId())
                 .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: "
                         + showtimeRequest.getMovieId()));
 
-        // Убедиться, что сеанс связан с фильмом
         if (!movie.getShowtimes().contains(showtime)) {
             movie.getShowtimes().add(showtime);
         }
 
-        // Найти театр по ID
         Theater theater = theaterService.findById(showtimeRequest.getTheaterId())
                 .orElseThrow(() -> new RuntimeException("Театр не найден с ID: "
                         + showtimeRequest.getTheaterId()));
 
-        // Убедиться, что сеанс связан с театром
         if (!theater.getShowtimes().contains(showtime)) {
             theater.getShowtimes().add(showtime);
         }
-
-
     }
 }
