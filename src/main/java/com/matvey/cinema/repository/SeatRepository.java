@@ -10,10 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
+
+    @Query(value = "SELECT * FROM seats WHERE theater_id = ?1", nativeQuery = true)
+    List<Seat> findSeatsByTheaterId(Long theaterId);
+
     default void updateSeatDetails(Seat seat, SeatRequest seatRequest,
                                    TheaterService theaterService, TicketService ticketService) {
         seat.setSeatRow(seatRequest.getSeatRow());

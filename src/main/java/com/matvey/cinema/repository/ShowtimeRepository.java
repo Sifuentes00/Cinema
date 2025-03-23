@@ -12,10 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
+
+    @Query(value = "SELECT * FROM showtimes WHERE theater_id = ?1", nativeQuery = true)
+    List<Showtime> findShowtimesByTheaterId(Long theaterId);
+
+    @Query(value = "SELECT * FROM showtimes WHERE movie_id = ?1", nativeQuery = true)
+    List<Showtime> findShowtimesByMovieId(Long movieId);
+
     default void updateShowtimeDetails(Showtime showtime, ShowtimeRequest showtimeRequest,
                                        MovieService movieService, TheaterService theaterService,
                                        TicketService ticketService) {

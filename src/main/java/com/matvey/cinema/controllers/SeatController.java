@@ -47,6 +47,15 @@ public class SeatController {
         return ResponseEntity.ok(seats);
     }
 
+    @GetMapping("/theater/{theaterId}")
+    public ResponseEntity<List<Seat>> getSeatsByTheaterId(@PathVariable Long theaterId) {
+        List<Seat> seats = seatRepository.findSeatsByTheaterId(theaterId);
+        if (seats.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Возвращает 204, если мест нет
+        }
+        return ResponseEntity.ok(seats); // Возвращает 200 и список мест
+    }
+
     @PostMapping
     public ResponseEntity<Seat> createSeat(@RequestBody SeatRequest seatRequest) {
         Seat seat = new Seat();

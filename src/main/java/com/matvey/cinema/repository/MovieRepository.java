@@ -25,14 +25,14 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         List<Review> reviews = new ArrayList<>();
         for (Long reviewId : movieRequest.getReviewIds()) {
             Optional<Review> reviewOptional = reviewService.findById(reviewId);
-            reviewOptional.ifPresent(reviews::add); // Добавляем отзыв, если он найден
+            reviewOptional.ifPresent(reviews::add);
         }
         movie.setReviews(reviews);
 
         List<Showtime> showtimes = new ArrayList<>();
         for (Long showtimeId : movieRequest.getShowtimeIds()) {
             Optional<Showtime> showtimeOptional = showtimeService.findById(showtimeId);
-            showtimeOptional.ifPresent(showtimes::add); // Добавляем сеанс, если он найден
+            showtimeOptional.ifPresent(showtimes::add);
         }
         movie.setShowtimes(showtimes);
     }
