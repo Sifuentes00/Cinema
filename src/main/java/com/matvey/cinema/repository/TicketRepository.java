@@ -8,11 +8,10 @@ import com.matvey.cinema.model.entities.User;
 import com.matvey.cinema.service.SeatService;
 import com.matvey.cinema.service.ShowtimeService;
 import com.matvey.cinema.service.UserService;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {

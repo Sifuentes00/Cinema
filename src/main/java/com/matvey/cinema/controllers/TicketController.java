@@ -50,7 +50,7 @@ public class TicketController {
         List<Ticket> tickets = ticketService.findAll();
         return ResponseEntity.ok(tickets);
     }
-    
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Ticket>> getTicketsByUserId(@PathVariable Long userId) {
         List<Ticket> tickets = ticketRepository.findTicketsByUserId(userId);
