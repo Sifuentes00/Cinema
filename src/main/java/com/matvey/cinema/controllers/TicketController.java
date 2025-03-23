@@ -52,13 +52,6 @@ public class TicketController {
     }
 
     @PostMapping
-    public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
-        Ticket savedTicket = ticketService.save(ticket);
-
-        return ResponseEntity.ok(savedTicket);
-    }
-
-    @PostMapping("/with")
     public ResponseEntity<Ticket> createTicket(@RequestBody TicketRequest ticketRequest) {
         Ticket ticket = new Ticket();
 
@@ -70,14 +63,7 @@ public class TicketController {
         return ResponseEntity.ok(savedTicket);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-        ticket.setId(id);
-        Ticket updatedTicket = ticketService.save(ticket);
-        return ResponseEntity.ok(updatedTicket);
-    }
-
-    @PutMapping("/with/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Ticket> updateTicket(@PathVariable Long id,
                                                @RequestBody TicketRequest ticketRequest) {
         Ticket existingTicket = ticketService.findById(id)

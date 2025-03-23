@@ -52,12 +52,6 @@ public class ShowtimeController {
     }
 
     @PostMapping
-    public ResponseEntity<Showtime> createShowtime(@RequestBody Showtime showtime) {
-        Showtime createdShowtime = showtimeService.save(showtime);
-        return ResponseEntity.ok(createdShowtime);
-    }
-
-    @PostMapping("/with")
     public ResponseEntity<Showtime> createShowtime(@RequestBody ShowtimeRequest showtimeRequest) {
         Showtime showtime = new Showtime();
 
@@ -69,15 +63,7 @@ public class ShowtimeController {
         return ResponseEntity.ok(savedShowtime);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Showtime> updateShowtime(@PathVariable Long id,
-                                                   @RequestBody Showtime showtime) {
-        showtime.setId(id);
-        Showtime updatedShowtime = showtimeService.save(showtime);
-        return ResponseEntity.ok(updatedShowtime);
-    }
-
-    @PutMapping("/with/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Showtime> updateShowtimeWithMovieAndTheater(
             @PathVariable Long id,
             @RequestBody ShowtimeRequest showtimeRequest) {

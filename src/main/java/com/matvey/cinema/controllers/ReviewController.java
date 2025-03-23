@@ -41,13 +41,7 @@ public class ReviewController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public ResponseEntity<List<Review>> getAllReviews() {
-        List<Review> reviews = reviewService.findAll();
-        return ResponseEntity.ok(reviews);
-    }
-
-    @PostMapping("/with")
+    @PostMapping
     public ResponseEntity<Review> createReview(@RequestBody ReviewRequest reviewRequest) {
         Review review = new Review();
 
@@ -58,21 +52,7 @@ public class ReviewController {
         return ResponseEntity.ok(createdReview);
     }
 
-    @PostMapping
-    public ResponseEntity<Review> createReviewWithoutMovieId(@RequestBody Review review) {
-        Review createdReview = reviewService.save(review);
-
-        return ResponseEntity.ok(createdReview);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Review> updateReview(@PathVariable Long id, @RequestBody Review review) {
-        review.setId(id);
-        Review updatedReview = reviewService.save(review);
-        return ResponseEntity.ok(updatedReview);
-    }
-
-    @PutMapping("/with/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Review> updateReviewWithUserAndMovie(
             @PathVariable Long id,
             @RequestBody ReviewRequest reviewRequest) {

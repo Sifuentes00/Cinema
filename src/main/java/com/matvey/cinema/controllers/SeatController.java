@@ -47,7 +47,7 @@ public class SeatController {
         return ResponseEntity.ok(seats);
     }
 
-    @PostMapping("/with")
+    @PostMapping
     public ResponseEntity<Seat> createSeat(@RequestBody SeatRequest seatRequest) {
         Seat seat = new Seat();
 
@@ -58,20 +58,7 @@ public class SeatController {
         return ResponseEntity.ok(createdSeat);
     }
 
-    @PostMapping
-    public ResponseEntity<Seat> createSeat(@RequestBody Seat seat) {
-        Seat createdSeat = seatService.save(seat);
-        return ResponseEntity.ok(createdSeat);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Seat> updateSeat(@PathVariable Long id, @RequestBody Seat seat) {
-        seat.setId(id);
-        Seat updatedSeat = seatService.save(seat);
-        return ResponseEntity.ok(updatedSeat);
-    }
-
-    @PutMapping("/with/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Seat> updateSeatWithTheaterAndTickets(
             @PathVariable Long id,
             @RequestBody SeatRequest seatRequest) {

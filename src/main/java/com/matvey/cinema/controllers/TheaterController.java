@@ -41,13 +41,7 @@ public class TheaterController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public ResponseEntity<List<Theater>> getAllTheaters() {
-        List<Theater> theaters = theaterService.findAll();
-        return ResponseEntity.ok(theaters);
-    }
-
-    @PostMapping("/with")
+    @PostMapping
     public ResponseEntity<Theater> createTheater(@RequestBody TheaterRequest theaterRequest) {
         Theater theater = new Theater();
 
@@ -58,21 +52,7 @@ public class TheaterController {
         return ResponseEntity.ok(createdTheater);
     }
 
-    @PostMapping
-    public ResponseEntity<Theater> createTheater(@RequestBody Theater theater) {
-        Theater createdTheater = theaterService.save(theater);
-        return ResponseEntity.ok(createdTheater);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Theater> updateTheater(@PathVariable Long id,
-                                                 @RequestBody Theater theater) {
-        theater.setId(id);
-        Theater updatedTheater = theaterService.save(theater);
-        return ResponseEntity.ok(updatedTheater);
-    }
-
-    @PutMapping("/with/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Theater> updateTheater(@PathVariable Long id,
                                                  @RequestBody TheaterRequest theaterRequest) {
         Optional<Theater> theaterOptional = theaterService.findById(id);

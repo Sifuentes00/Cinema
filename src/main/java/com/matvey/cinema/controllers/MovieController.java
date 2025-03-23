@@ -48,12 +48,6 @@ public class MovieController {
     }
 
     @PostMapping
-    public ResponseEntity<Movie> createMovie(@RequestBody Movie movie) {
-        Movie savedMovie = movieService.save(movie);
-        return ResponseEntity.ok(savedMovie);
-    }
-
-    @PostMapping("/with")
     public ResponseEntity<Movie> createMovie(@RequestBody MovieRequest movieRequest) {
         Movie movie = new Movie();
         movieRepository.updateMovieDetails(movie, movieRequest, reviewService, showtimeService);
@@ -61,14 +55,7 @@ public class MovieController {
         return ResponseEntity.ok(savedMovie);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Movie movie) {
-        movie.setId(id);
-        Movie updatedMovie = movieService.save(movie);
-        return ResponseEntity.ok(updatedMovie);
-    }
-
-    @PutMapping("/with/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Movie> updateMovieWithReviewsAndShowtimes(
             @PathVariable Long id,
             @RequestBody MovieRequest movieRequest) {
