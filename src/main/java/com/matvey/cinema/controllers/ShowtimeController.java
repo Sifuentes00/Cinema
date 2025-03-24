@@ -55,18 +55,18 @@ public class ShowtimeController {
     public ResponseEntity<List<Showtime>> getShowtimesByTheaterId(@PathVariable Long theaterId) {
         List<Showtime> showtimes = showtimeService.findShowtimesByTheaterId(theaterId);
         if (showtimes.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Возвращает 204, если сеансов нет
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(showtimes); // Возвращает 200 и список сеансов
+        return ResponseEntity.ok(showtimes);
     }
 
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<Showtime>> getShowtimesByMovieId(@PathVariable Long movieId) {
         List<Showtime> showtimes = showtimeService.findShowtimesByMovieId(movieId);
         if (showtimes.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Возвращает 204, если сеансов нет
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(showtimes); // Возвращает 200 и список сеансов
+        return ResponseEntity.ok(showtimes);
     }
 
     @PostMapping

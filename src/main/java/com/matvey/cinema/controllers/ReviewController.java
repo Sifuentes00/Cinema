@@ -52,27 +52,27 @@ public class ReviewController {
     public ResponseEntity<List<Review>> getReviewsByMovieId(@PathVariable Long movieId) {
         List<Review> reviews = reviewService.findReviewsByMovieId(movieId);
         if (reviews.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Возвращает 204, если отзывов нет
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(reviews); // Возвращает 200 и список отзывов
+        return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Review>> getReviewsByUserId(@PathVariable Long userId) {
         List<Review> reviews = reviewService.findReviewsByUserId(userId);
         if (reviews.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Возвращает 204, если отзывов нет
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(reviews); // Возвращает 200 и список отзывов
+        return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("/content")
     public ResponseEntity<List<Review>> getReviewsByContent(@RequestParam String content) {
         List<Review> reviews = reviewService.findReviewsByContent(content);
         if (reviews.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Возвращает 204, если отзывов нет
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(reviews); // Возвращает 200 и список отзывов
+        return ResponseEntity.ok(reviews);
     }
 
     @PostMapping

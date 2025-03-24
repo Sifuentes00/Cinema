@@ -51,9 +51,9 @@ public class SeatController {
     public ResponseEntity<List<Seat>> getSeatsByTheaterId(@PathVariable Long theaterId) {
         List<Seat> seats = seatService.findSeatsByTheaterId(theaterId);
         if (seats.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Возвращает 204, если мест нет
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(seats); // Возвращает 200 и список мест
+        return ResponseEntity.ok(seats);
     }
 
     @PostMapping
