@@ -6,6 +6,8 @@ import com.matvey.cinema.repository.TheaterRepository;
 import com.matvey.cinema.service.SeatService;
 import com.matvey.cinema.service.ShowtimeService;
 import com.matvey.cinema.service.TheaterService;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +41,13 @@ public class TheaterController {
         return theater.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/theaters")
+    public ResponseEntity<List<Theater>> getAllTheaters() {
+        List<Theater> theaters = theaterService.findAll();
+        return ResponseEntity.ok(theaters);
+    }
+
 
     @PostMapping
     public ResponseEntity<Theater> createTheater(@RequestBody TheaterRequest theaterRequest) {
