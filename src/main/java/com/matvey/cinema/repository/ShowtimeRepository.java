@@ -19,11 +19,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 
-    @Query(value = "SELECT * FROM showtimes WHERE theater_id = ?1", nativeQuery = true)
-    List<Showtime> findShowtimesByTheaterId(Long theaterId);
+    // Поиск сеансов по названию театра
+    @Query(value =
+            "SELECT st.* FROM showtimes st JOIN theaters t ON st.theater_id=t.id WHERE t.name = ?1",
+            nativeQuery = true)
+    List<Showtime> findShowtimesByTheaterName(String theaterName);
 
-    @Query(value = "SELECT * FROM showtimes WHERE movie_id = ?1", nativeQuery = true)
-    List<Showtime> findShowtimesByMovieId(Long movieId);
+    // Поиск сеансов по названию фильма
+    @Query(value =
+            "SELECT st.* FROM showtimes st JOIN movies m ON st.movie_id = m.id WHERE m.title = ?1",
+            nativeQuery = true)
+    List<Showtime> findShowtimesByMovieTitle(String movieTitle);
+
 
     @Query(value = "SELECT theater_id FROM showtimes WHERE id = :id", nativeQuery = true)
     Optional<Long> findTheaterIdById(@Param("id") Long id);

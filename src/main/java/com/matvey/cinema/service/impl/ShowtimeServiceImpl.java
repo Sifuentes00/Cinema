@@ -54,15 +54,15 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
     @Override
-    public List<Showtime> findShowtimesByTheaterId(Long theaterId) {
-        String cacheKey = CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId;
+    public List<Showtime> findShowtimesByTheaterName(String theaterName) {
+        String cacheKey = CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterName;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
             return (List<Showtime>) cachedData.get();
         }
 
-        List<Showtime> showtimes = showtimeRepository.findShowtimesByTheaterId(theaterId);
+        List<Showtime> showtimes = showtimeRepository.findShowtimesByTheaterName(theaterName);
 
         cache.put(cacheKey, showtimes);
 
@@ -70,15 +70,15 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     }
 
     @Override
-    public List<Showtime> findShowtimesByMovieId(Long movieId) {
-        String cacheKey = CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieId;
+    public List<Showtime> findShowtimesByMovieTitle(String movieTitle) {
+        String cacheKey = CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieTitle;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
             return (List<Showtime>) cachedData.get();
         }
 
-        List<Showtime> showtimes = showtimeRepository.findShowtimesByMovieId(movieId);
+        List<Showtime> showtimes = showtimeRepository.findShowtimesByMovieTitle(movieTitle);
 
         cache.put(cacheKey, showtimes);
 
@@ -95,7 +95,8 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         Optional<Long> theaterIdOpt = showtimeRepository.findTheaterIdById(savedShowtime.getId());
         Optional<Long> movieIdOpt = showtimeRepository.findMovieIdById(savedShowtime.getId());
 
-        theaterIdOpt.ifPresent(theaterId -> cache.evict(CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId));
+        theaterIdOpt.ifPresent(theaterId ->
+                cache.evict(CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId));
         movieIdOpt.ifPresent(movieId -> cache.evict(CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieId));
 
         return savedShowtime;
@@ -111,8 +112,10 @@ public class ShowtimeServiceImpl implements ShowtimeService {
             Optional<Long> theaterIdOpt = showtimeRepository.findTheaterIdById(showtime.getId());
             Optional<Long> movieIdOpt = showtimeRepository.findMovieIdById(showtime.getId());
 
-            theaterIdOpt.ifPresent(theaterId -> cache.evict(CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId));
-            movieIdOpt.ifPresent(movieId -> cache.evict(CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieId));
+            theaterIdOpt.ifPresent(theaterId ->
+                    cache.evict(CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId));
+            movieIdOpt.ifPresent(movieId ->
+                    cache.evict(CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieId));
         });
 
         showtimeRepository.deleteById(id);

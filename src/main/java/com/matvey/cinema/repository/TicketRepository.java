@@ -18,11 +18,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    @Query(value = "SELECT * FROM tickets WHERE user_id = ?1", nativeQuery = true)
-    List<Ticket> findTicketsByUserId(Long userId);
+    // Поиск билетов по имени пользователя
+    @Query(value =
+            "SELECT t.* FROM tickets t JOIN users u ON t.user_id = u.id WHERE u.username = ?1",
+            nativeQuery = true)
+    List<Ticket> findTicketsByUserUsername(String username);
 
-    @Query(value = "SELECT * FROM tickets WHERE showtime_id = ?1", nativeQuery = true)
-    List<Ticket> findTicketsByShowtimeId(Long showtimeId);
+    // Поиск билетов по дате и времени сеанса
+    @Query(value =
+            "SELECT t.* FROM tickets t JOIN showtimes s ON t.showtime_id=s.id WHERE s.date_time=?1",
+            nativeQuery = true)
+    List<Ticket> findTicketsByShowtimeDateTime(String showtimeDateTime);
 
     @Query(value = "SELECT * FROM tickets WHERE seat_id = ?1", nativeQuery = true)
     List<Ticket> findTicketsBySeatId(Long seatId);

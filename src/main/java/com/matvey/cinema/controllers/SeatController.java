@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -47,9 +48,9 @@ public class SeatController {
         return ResponseEntity.ok(seats);
     }
 
-    @GetMapping("/theater/{theaterId}")
-    public ResponseEntity<List<Seat>> getSeatsByTheaterId(@PathVariable Long theaterId) {
-        List<Seat> seats = seatService.findSeatsByTheaterId(theaterId);
+    @GetMapping("/theater")
+    public ResponseEntity<List<Seat>> getSeatsByTheaterId(@RequestParam String theaterName) {
+        List<Seat> seats = seatService.findSeatsByTheaterName(theaterName);
         if (seats.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

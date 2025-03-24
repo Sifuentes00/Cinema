@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,18 +52,20 @@ public class ShowtimeController {
         return ResponseEntity.ok(showtimes);
     }
 
-    @GetMapping("/theater/{theaterId}")
-    public ResponseEntity<List<Showtime>> getShowtimesByTheaterId(@PathVariable Long theaterId) {
-        List<Showtime> showtimes = showtimeService.findShowtimesByTheaterId(theaterId);
+    @GetMapping("/theater")
+    public ResponseEntity<List<Showtime>> getShowtimesByTheaterName(@RequestParam String
+                                                                                theaterName) {
+        List<Showtime> showtimes = showtimeService.findShowtimesByTheaterName(theaterName);
         if (showtimes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(showtimes);
     }
 
-    @GetMapping("/movie/{movieId}")
-    public ResponseEntity<List<Showtime>> getShowtimesByMovieId(@PathVariable Long movieId) {
-        List<Showtime> showtimes = showtimeService.findShowtimesByMovieId(movieId);
+    @GetMapping("/movie")
+    public ResponseEntity<List<Showtime>> getShowtimesByMovieTitle(@RequestParam String
+                                                                               movieTitle) {
+        List<Showtime> showtimes = showtimeService.findShowtimesByMovieTitle(movieTitle);
         if (showtimes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

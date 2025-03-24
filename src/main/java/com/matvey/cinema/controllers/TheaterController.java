@@ -6,7 +6,6 @@ import com.matvey.cinema.repository.TheaterRepository;
 import com.matvey.cinema.service.SeatService;
 import com.matvey.cinema.service.ShowtimeService;
 import com.matvey.cinema.service.TheaterService;
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;

@@ -17,8 +17,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
 
-    @Query(value = "SELECT * FROM seats WHERE theater_id = ?1", nativeQuery = true)
-    List<Seat> findSeatsByTheaterId(Long theaterId);
+    // Поиск мест по названию театра
+    @Query(value =
+            "SELECT s.* FROM seats s JOIN theaters t ON s.theater_id = t.id WHERE t.name = ?1",
+            nativeQuery = true)
+    List<Seat> findSeatsByTheaterName(String theaterName);
 
     @Query(value = "SELECT theater_id FROM seats WHERE id = :id", nativeQuery = true)
     Optional<Long> findTheaterIdById(@Param("id") Long id);

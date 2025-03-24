@@ -11,9 +11,9 @@ public interface ReviewService {
 
     List<Review> findReviewsByContent(String content);
 
-    List<Review> findReviewsByMovieId(Long movieId);
+    List<Review> findReviewsByMovieTitle(String movieTitle);
 
-    List<Review> findReviewsByUserId(Long userId);
+    List<Review> findReviewsByUserUsername(String userUsername);
 
     Review save(Review review);
 

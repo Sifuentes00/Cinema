@@ -9,7 +9,7 @@ public interface SeatService {
 
     List<Seat> findAll();
 
-    List<Seat> findSeatsByTheaterId(Long theaterId);
+    List<Seat> findSeatsByTheaterName(String theaterName);
 
     Seat save(Seat seat);
 

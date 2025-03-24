@@ -70,15 +70,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> findReviewsByMovieId(Long movieId) {
-        String cacheKey = CacheKeys.REVIEWS_MOVIE_PREFIX + movieId;
+    public List<Review> findReviewsByMovieTitle(String movieTitle) {
+        String cacheKey = CacheKeys.REVIEWS_MOVIE_PREFIX + movieTitle;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
             return (List<Review>) cachedData.get();
         }
 
-        List<Review> reviews = reviewRepository.findReviewsByMovieId(movieId);
+        List<Review> reviews = reviewRepository.findReviewsByMovieTitle(movieTitle);
 
         cache.put(cacheKey, reviews);
 
@@ -86,15 +86,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> findReviewsByUserId(Long userId) {
-        String cacheKey = CacheKeys.REVIEWS_USER_PREFIX + userId;
+    public List<Review> findReviewsByUserUsername(String userUsername) {
+        String cacheKey = CacheKeys.REVIEWS_USER_PREFIX + userUsername;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
             return (List<Review>) cachedData.get();
         }
 
-        List<Review> reviews = reviewRepository.findReviewsByUserId(userId);
+        List<Review> reviews = reviewRepository.findReviewsByUserUsername(userUsername);
 
         cache.put(cacheKey, reviews);
 

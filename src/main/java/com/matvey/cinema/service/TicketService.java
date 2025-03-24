@@ -9,9 +9,9 @@ public interface TicketService {
 
     List<Ticket> findAll();
 
-    List<Ticket> findTicketsByUserId(Long userId);
+    List<Ticket> findTicketsByUserUsername(String userUsername);
 
-    List<Ticket> findTicketsByShowtimeId(Long showtimeId);
+    List<Ticket> findTicketsByShowtimeDateTime(String showtimeDateTime);
 
     List<Ticket> findTicketsBySeatId(Long seatId);
 

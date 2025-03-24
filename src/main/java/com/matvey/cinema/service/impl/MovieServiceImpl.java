@@ -1,7 +1,7 @@
 package com.matvey.cinema.service.impl;
 
-import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.cache.CacheKeys;
+import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.repository.MovieRepository;
 import com.matvey.cinema.service.MovieService;

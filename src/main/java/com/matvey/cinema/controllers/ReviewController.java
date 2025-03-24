@@ -48,18 +48,19 @@ public class ReviewController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/movie/{movieId}")
-    public ResponseEntity<List<Review>> getReviewsByMovieId(@PathVariable Long movieId) {
-        List<Review> reviews = reviewService.findReviewsByMovieId(movieId);
+    @GetMapping("/movie")
+    public ResponseEntity<List<Review>> getReviewsByMovieTitle(@RequestParam String movieTitle) {
+        List<Review> reviews = reviewService.findReviewsByMovieTitle(movieTitle);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Review>> getReviewsByUserId(@PathVariable Long userId) {
-        List<Review> reviews = reviewService.findReviewsByUserId(userId);
+    @GetMapping("/user")
+    public ResponseEntity<List<Review>> getReviewsByUserUsername(@RequestParam String
+                                                                             userUsername) {
+        List<Review> reviews = reviewService.findReviewsByUserUsername(userUsername);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

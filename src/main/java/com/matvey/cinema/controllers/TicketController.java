@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,18 +52,20 @@ public class TicketController {
         return ResponseEntity.ok(tickets);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Ticket>> getTicketsByUserId(@PathVariable Long userId) {
-        List<Ticket> tickets = ticketService.findTicketsByUserId(userId);
+    @GetMapping("/user")
+    public ResponseEntity<List<Ticket>> getTicketsByUserUsername(@RequestParam String
+                                                                             userUsername) {
+        List<Ticket> tickets = ticketService.findTicketsByUserUsername(userUsername);
         if (tickets.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(tickets);
     }
 
-    @GetMapping("/showtime/{showtimeId}")
-    public ResponseEntity<List<Ticket>> getTicketsByShowtimeId(@PathVariable Long showtimeId) {
-        List<Ticket> tickets = ticketService.findTicketsByShowtimeId(showtimeId);
+    @GetMapping("/showtime")
+    public ResponseEntity<List<Ticket>> getTicketsByShowtimeDateTime(@RequestParam String
+                                                                                 showtimeDateTime) {
+        List<Ticket> tickets = ticketService.findTicketsByShowtimeDateTime(showtimeDateTime);
         if (tickets.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

@@ -20,12 +20,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r WHERE r.content = :content")
     List<Review> findReviewsByContent(@Param("content") String content);
 
-    //native query
-    @Query(value = "SELECT * FROM reviews WHERE movie_id = ?1", nativeQuery = true)
-    List<Review> findReviewsByMovieId(Long movieId);
+    // Поиск отзывов по названию фильма
+    @Query(value =
+            "SELECT r.* FROM reviews r JOIN movies m ON r.movie_id = m.id" + " WHERE m.title = ?1",
+            nativeQuery = true)
+    List<Review> findReviewsByMovieTitle(String movieTitle);
 
-    @Query(value = "SELECT * FROM reviews WHERE user_id = ?1", nativeQuery = true)
-    List<Review> findReviewsByUserId(Long userId);
+    // Поиск отзывов по имени пользователя
+    @Query(value =
+            "SELECT r.* FROM reviews r JOIN users u ON r.user_id = u.id" + " WHERE u.username = ?1",
+            nativeQuery = true)
+    List<Review> findReviewsByUserUsername(String username);
 
     @Query(value = "SELECT movie_id FROM reviews WHERE id = :id", nativeQuery = true)
     Optional<Long> findMovieIdById(@Param("id") Long id);

@@ -9,9 +9,9 @@ public interface ShowtimeService {
 
     List<Showtime> findAll();
 
-    List<Showtime> findShowtimesByTheaterId(Long theaterId);
+    List<Showtime> findShowtimesByTheaterName(String theaterName);
 
-    List<Showtime> findShowtimesByMovieId(Long movieId);
+    List<Showtime> findShowtimesByMovieTitle(String movieTitle);
 
     Showtime save(Showtime showtime);
 

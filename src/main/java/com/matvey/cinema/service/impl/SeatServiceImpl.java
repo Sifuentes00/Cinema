@@ -54,15 +54,15 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public List<Seat> findSeatsByTheaterId(Long theaterId) {
-        String cacheKey = CacheKeys.SEATS_THEATER_PREFIX + theaterId;
+    public List<Seat> findSeatsByTheaterName(String theaterName) {
+        String cacheKey = CacheKeys.SEATS_THEATER_PREFIX + theaterName;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
             return (List<Seat>) cachedData.get();
         }
 
-        List<Seat> seats = seatRepository.findSeatsByTheaterId(theaterId);
+        List<Seat> seats = seatRepository.findSeatsByTheaterName(theaterName);
 
         cache.put(cacheKey, seats);
 
@@ -78,7 +78,8 @@ public class SeatServiceImpl implements SeatService {
         cache.evict(CacheKeys.SEATS_ALL);
         cache.evict(CacheKeys.SEAT_PREFIX + savedSeat.getId());
 
-        theaterIdOpt.ifPresent(theaterId -> cache.evict(CacheKeys.SEATS_THEATER_PREFIX + theaterId));
+        theaterIdOpt.ifPresent(theaterId ->
+                cache.evict(CacheKeys.SEATS_THEATER_PREFIX + theaterId));
 
         return savedSeat;
     }
@@ -92,7 +93,8 @@ public class SeatServiceImpl implements SeatService {
             cache.evict(CacheKeys.SEATS_ALL);
             cache.evict(CacheKeys.SEAT_PREFIX + seat.getId());
 
-            theaterIdOpt.ifPresent(theaterId -> cache.evict(CacheKeys.SEATS_THEATER_PREFIX + theaterId));
+            theaterIdOpt.ifPresent(theaterId ->
+                    cache.evict(CacheKeys.SEATS_THEATER_PREFIX + theaterId));
         });
 
         seatRepository.deleteById(id);
