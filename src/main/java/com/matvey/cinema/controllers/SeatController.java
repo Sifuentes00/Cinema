@@ -49,7 +49,7 @@ public class SeatController {
 
     @GetMapping("/theater/{theaterId}")
     public ResponseEntity<List<Seat>> getSeatsByTheaterId(@PathVariable Long theaterId) {
-        List<Seat> seats = seatRepository.findSeatsByTheaterId(theaterId);
+        List<Seat> seats = seatService.findSeatsByTheaterId(theaterId);
         if (seats.isEmpty()) {
             return ResponseEntity.noContent().build(); // Возвращает 204, если мест нет
         }

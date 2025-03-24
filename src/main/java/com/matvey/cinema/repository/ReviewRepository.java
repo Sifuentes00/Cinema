@@ -7,6 +7,7 @@ import com.matvey.cinema.model.entities.User;
 import com.matvey.cinema.service.MovieService;
 import com.matvey.cinema.service.UserService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +26,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query(value = "SELECT * FROM reviews WHERE user_id = ?1", nativeQuery = true)
     List<Review> findReviewsByUserId(Long userId);
+
+    @Query(value = "SELECT movie_id FROM reviews WHERE id = :id", nativeQuery = true)
+    Optional<Long> findMovieIdById(@Param("id") Long id);
+
+    @Query(value = "SELECT user_id FROM reviews WHERE id = :id", nativeQuery = true)
+    Optional<Long> findUserIdById(@Param("id") Long id);
 
     default void updateReviewDetails(Review review, ReviewRequest reviewRequest,
                                      MovieService movieService, UserService userService) {

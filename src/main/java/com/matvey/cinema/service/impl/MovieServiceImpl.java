@@ -1,5 +1,6 @@
 package com.matvey.cinema.service.impl;
 
+import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.repository.MovieRepository;
 import com.matvey.cinema.service.MovieService;
@@ -11,43 +12,61 @@ import org.springframework.stereotype.Service;
 @Service
 public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
+    private final InMemoryCache cache;
 
     @Autowired
-    public MovieServiceImpl(MovieRepository movieRepository) {
+    public MovieServiceImpl(MovieRepository movieRepository, InMemoryCache cache) {
         this.movieRepository = movieRepository;
+        this.cache = cache;
     }
 
     @Override
     public Optional<Movie> findById(Long id) {
-        return movieRepository.findById(id);
+        String cacheKey = "movie_" + id;
+
+        Optional<Object> cachedData = cache.get(cacheKey);
+        if (cachedData.isPresent()) {
+            return Optional.of((Movie) cachedData.get());
+        }
+
+        Optional<Movie> movie = movieRepository.findById(id);
+
+        movie.ifPresent(value -> cache.put(cacheKey, value));
+
+        return movie;
     }
 
     @Override
     public List<Movie> findAll() {
-        return movieRepository.findAll();
-    }
+        String cacheKey = "movies_all";
 
-    @Override
-    public List<Movie> findByQueryParams(Long id, String title, String director,
-                                         int releaseYear, String genre) {
+        Optional<Object> cachedData = cache.get(cacheKey);
+        if (cachedData.isPresent()) {
+            return (List<Movie>) cachedData.get();
+        }
+
         List<Movie> movies = movieRepository.findAll();
 
-        return movies.stream()
-                .filter(movie -> (id == null || movie.getId().equals(id))
-                        && (title == null || movie.getTitle().equalsIgnoreCase(title))
-                        && (director == null || movie.getDirector().equalsIgnoreCase(director))
-                        && (releaseYear == 0 || movie.getReleaseYear() == releaseYear)
-                        && (genre == null || movie.getGenre().equalsIgnoreCase(genre)))
-                .toList();
+        cache.put(cacheKey, movies);
+
+        return movies;
     }
 
     @Override
     public Movie save(Movie movie) {
-        return movieRepository.save(movie);
+        Movie savedMovie = movieRepository.save(movie);
+
+        cache.evict("movies_all");
+        cache.evict("movie_" + savedMovie.getId());
+
+        return savedMovie;
     }
 
     @Override
     public void deleteById(Long id) {
         movieRepository.deleteById(id);
+
+        cache.evict("movies_all");
+        cache.evict("movie_" + id);
     }
 }

@@ -9,8 +9,10 @@ import com.matvey.cinema.service.SeatService;
 import com.matvey.cinema.service.ShowtimeService;
 import com.matvey.cinema.service.UserService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -24,6 +26,15 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query(value = "SELECT * FROM tickets WHERE seat_id = ?1", nativeQuery = true)
     List<Ticket> findTicketsBySeatId(Long seatId);
+
+    @Query(value = "SELECT user_id FROM tickets WHERE id = :id", nativeQuery = true)
+    Optional<Long> findUserIdById(@Param("id") Long id);
+
+    @Query(value = "SELECT showtime_id FROM tickets WHERE id = :id", nativeQuery = true)
+    Optional<Long> findShowtimeIdById(@Param("id") Long id);
+
+    @Query(value = "SELECT seat_id FROM tickets WHERE id = :id", nativeQuery = true)
+    Optional<Long> findSeatIdById(@Param("id") Long id);
 
     default void updateTicketDetails(Ticket ticket, TicketRequest ticketRequest,
                                      ShowtimeService showtimeService, SeatService seatService,

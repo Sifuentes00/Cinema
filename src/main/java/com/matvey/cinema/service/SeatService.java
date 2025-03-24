@@ -9,6 +9,8 @@ public interface SeatService {
 
     List<Seat> findAll();
 
+    List<Seat> findSeatsByTheaterId(Long theaterId);
+
     Seat save(Seat seat);
 
     void deleteById(Long id);

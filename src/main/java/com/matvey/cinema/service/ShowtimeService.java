@@ -9,6 +9,10 @@ public interface ShowtimeService {
 
     List<Showtime> findAll();
 
+    List<Showtime> findShowtimesByTheaterId(Long theaterId);
+
+    List<Showtime> findShowtimesByMovieId(Long movieId);
+
     Showtime save(Showtime showtime);
 
     void deleteById(Long id);

@@ -50,7 +50,7 @@ public class ReviewController {
 
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<Review>> getReviewsByMovieId(@PathVariable Long movieId) {
-        List<Review> reviews = reviewRepository.findReviewsByMovieId(movieId);
+        List<Review> reviews = reviewService.findReviewsByMovieId(movieId);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build(); // Возвращает 204, если отзывов нет
         }
@@ -59,7 +59,7 @@ public class ReviewController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Review>> getReviewsByUserId(@PathVariable Long userId) {
-        List<Review> reviews = reviewRepository.findReviewsByUserId(userId);
+        List<Review> reviews = reviewService.findReviewsByUserId(userId);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build(); // Возвращает 204, если отзывов нет
         }
@@ -68,7 +68,7 @@ public class ReviewController {
 
     @GetMapping("/content")
     public ResponseEntity<List<Review>> getReviewsByContent(@RequestParam String content) {
-        List<Review> reviews = reviewRepository.findReviewsByContent(content);
+        List<Review> reviews = reviewService.findReviewsByContent(content);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build(); // Возвращает 204, если отзывов нет
         }

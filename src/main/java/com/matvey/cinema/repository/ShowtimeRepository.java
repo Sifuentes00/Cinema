@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,6 +24,12 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 
     @Query(value = "SELECT * FROM showtimes WHERE movie_id = ?1", nativeQuery = true)
     List<Showtime> findShowtimesByMovieId(Long movieId);
+
+    @Query(value = "SELECT theater_id FROM showtimes WHERE id = :id", nativeQuery = true)
+    Optional<Long> findTheaterIdById(@Param("id") Long id);
+
+    @Query(value = "SELECT movie_id FROM showtimes WHERE id = :id", nativeQuery = true)
+    Optional<Long> findMovieIdById(@Param("id") Long id);
 
     default void updateShowtimeDetails(Showtime showtime, ShowtimeRequest showtimeRequest,
                                        MovieService movieService, TheaterService theaterService,

@@ -53,7 +53,7 @@ public class TicketController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Ticket>> getTicketsByUserId(@PathVariable Long userId) {
-        List<Ticket> tickets = ticketRepository.findTicketsByUserId(userId);
+        List<Ticket> tickets = ticketService.findTicketsByUserId(userId);
         if (tickets.isEmpty()) {
             return ResponseEntity.noContent().build(); // Возвращает 204, если билетов нет
         }
@@ -62,7 +62,7 @@ public class TicketController {
 
     @GetMapping("/showtime/{showtimeId}")
     public ResponseEntity<List<Ticket>> getTicketsByShowtimeId(@PathVariable Long showtimeId) {
-        List<Ticket> tickets = ticketRepository.findTicketsByShowtimeId(showtimeId);
+        List<Ticket> tickets = ticketService.findTicketsByShowtimeId(showtimeId);
         if (tickets.isEmpty()) {
             return ResponseEntity.noContent().build(); // Возвращает 204, если билетов нет
         }
@@ -71,7 +71,7 @@ public class TicketController {
 
     @GetMapping("/seat/{seatId}")
     public ResponseEntity<List<Ticket>> getTicketsBySeatId(@PathVariable Long seatId) {
-        List<Ticket> tickets = ticketRepository.findTicketsBySeatId(seatId);
+        List<Ticket> tickets = ticketService.findTicketsBySeatId(seatId);
         if (tickets.isEmpty()) {
             return ResponseEntity.noContent().build(); // Возвращает 204, если билетов нет
         }

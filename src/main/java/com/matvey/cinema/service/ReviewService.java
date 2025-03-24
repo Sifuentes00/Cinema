@@ -9,6 +9,12 @@ public interface ReviewService {
 
     List<Review> findAll();
 
+    List<Review> findReviewsByContent(String content);
+
+    List<Review> findReviewsByMovieId(Long movieId);
+
+    List<Review> findReviewsByUserId(Long userId);
+
     Review save(Review review);
 
     void deleteById(Long id);
