@@ -30,4 +30,8 @@ public class CacheKeys {
 
     public static final String USER_PREFIX = "user_";
     public static final String USERS_ALL = "users_all";
+
+    private CacheKeys() {
+        throw new UnsupportedOperationException("Utility class. Instantiation is not allowed.");
+    }
 }
