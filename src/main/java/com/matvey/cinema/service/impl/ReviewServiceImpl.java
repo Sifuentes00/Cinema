@@ -1,5 +1,6 @@
 package com.matvey.cinema.service.impl;
 
+import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.Review;
 import com.matvey.cinema.repository.ReviewRepository;
@@ -22,7 +23,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Optional<Review> findById(Long id) {
-        String cacheKey = "review_" + id;
+        String cacheKey = CacheKeys.REVIEW_PREFIX + id;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -36,10 +37,9 @@ public class ReviewServiceImpl implements ReviewService {
         return review;
     }
 
-
     @Override
     public List<Review> findAll() {
-        String cacheKey = "reviews_all";
+        String cacheKey = CacheKeys.REVIEWS_ALL;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -55,7 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> findReviewsByContent(String content) {
-        String cacheKey = "reviews_content_" + content;
+        String cacheKey = CacheKeys.REVIEWS_CONTENT_PREFIX + content;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -71,7 +71,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> findReviewsByMovieId(Long movieId) {
-        String cacheKey = "reviews_movie_" + movieId;
+        String cacheKey = CacheKeys.REVIEWS_MOVIE_PREFIX + movieId;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -87,7 +87,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> findReviewsByUserId(Long userId) {
-        String cacheKey = "reviews_user_" + userId;
+        String cacheKey = CacheKeys.REVIEWS_USER_PREFIX + userId;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -106,15 +106,15 @@ public class ReviewServiceImpl implements ReviewService {
         Review savedReview = reviewRepository.save(review);
 
         // Очищаем кэш для всех отзывов и для конкретного отзыва
-        cache.evict("reviews_all");
-        cache.evict("review_" + savedReview.getId());
-        cache.evict("reviews_content_" + savedReview.getContent());
+        cache.evict(CacheKeys.REVIEWS_ALL);
+        cache.evict(CacheKeys.REVIEW_PREFIX + savedReview.getId());
+        cache.evict(CacheKeys.REVIEWS_CONTENT_PREFIX + savedReview.getContent());
 
         Optional<Long> movieIdOpt = reviewRepository.findMovieIdById(savedReview.getId());
         Optional<Long> userIdOpt = reviewRepository.findUserIdById(savedReview.getId());
 
-        movieIdOpt.ifPresent(movieId -> cache.evict("reviews_movie_" + movieId));
-        userIdOpt.ifPresent(userId -> cache.evict("reviews_user_" + userId));
+        movieIdOpt.ifPresent(movieId -> cache.evict(CacheKeys.REVIEWS_MOVIE_PREFIX + movieId));
+        userIdOpt.ifPresent(userId -> cache.evict(CacheKeys.REVIEWS_USER_PREFIX + userId));
 
         return savedReview;
     }
@@ -123,15 +123,15 @@ public class ReviewServiceImpl implements ReviewService {
     public void deleteById(Long id) {
         Optional<Review> reviewOpt = reviewRepository.findById(id);
         reviewOpt.ifPresent(review -> {
-            cache.evict("reviews_all");
-            cache.evict("review_" + review.getId());
-            cache.evict("reviews_content_" + review.getContent());
+            cache.evict(CacheKeys.REVIEWS_ALL);
+            cache.evict(CacheKeys.REVIEW_PREFIX + review.getId());
+            cache.evict(CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent());
 
             Optional<Long> movieIdOpt = reviewRepository.findMovieIdById(review.getId());
             Optional<Long> userIdOpt = reviewRepository.findUserIdById(review.getId());
 
-            movieIdOpt.ifPresent(movieId -> cache.evict("reviews_movie_" + movieId));
-            userIdOpt.ifPresent(userId -> cache.evict("reviews_user_" + userId));
+            movieIdOpt.ifPresent(movieId -> cache.evict(CacheKeys.REVIEWS_MOVIE_PREFIX + movieId));
+            userIdOpt.ifPresent(userId -> cache.evict(CacheKeys.REVIEWS_USER_PREFIX + userId));
         });
         reviewRepository.deleteById(id);
     }
