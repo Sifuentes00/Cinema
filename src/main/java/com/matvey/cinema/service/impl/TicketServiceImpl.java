@@ -1,5 +1,6 @@
 package com.matvey.cinema.service.impl;
 
+import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.Ticket;
 import com.matvey.cinema.repository.TicketRepository;
@@ -22,7 +23,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Optional<Ticket> findById(Long id) {
-        String cacheKey = "ticket_" + id;
+        String cacheKey = CacheKeys.TICKET_PREFIX + id;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -38,7 +39,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> findAll() {
-        String cacheKey = "tickets_all";
+        String cacheKey = CacheKeys.TICKETS_ALL;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -54,7 +55,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> findTicketsByUserId(Long userId) {
-        String cacheKey = "tickets_user_" + userId;
+        String cacheKey = CacheKeys.TICKETS_USER_PREFIX + userId;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -70,7 +71,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> findTicketsByShowtimeId(Long showtimeId) {
-        String cacheKey = "tickets_showtime_" + showtimeId;
+        String cacheKey = CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -86,7 +87,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> findTicketsBySeatId(Long seatId) {
-        String cacheKey = "tickets_seat_" + seatId;
+        String cacheKey = CacheKeys.TICKETS_SEAT_PREFIX + seatId;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -104,16 +105,16 @@ public class TicketServiceImpl implements TicketService {
     public Ticket save(Ticket ticket) {
         Ticket savedTicket = ticketRepository.save(ticket);
 
-        cache.evict("tickets_all");
-        cache.evict("ticket_" + savedTicket.getId());
+        cache.evict(CacheKeys.TICKETS_ALL);
+        cache.evict(CacheKeys.TICKET_PREFIX + savedTicket.getId());
 
         Optional<Long> userIdOpt = ticketRepository.findUserIdById(savedTicket.getId());
         Optional<Long> showtimeIdOpt = ticketRepository.findShowtimeIdById(savedTicket.getId());
         Optional<Long> seatIdOpt = ticketRepository.findSeatIdById(savedTicket.getId());
 
-        userIdOpt.ifPresent(userId -> cache.evict("tickets_user_" + userId));
-        showtimeIdOpt.ifPresent(showtimeId -> cache.evict("tickets_showtime_" + showtimeId));
-        seatIdOpt.ifPresent(seatId -> cache.evict("tickets_seat_" + seatId));
+        userIdOpt.ifPresent(userId -> cache.evict(CacheKeys.TICKETS_USER_PREFIX + userId));
+        showtimeIdOpt.ifPresent(showtimeId -> cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId));
+        seatIdOpt.ifPresent(seatId -> cache.evict(CacheKeys.TICKETS_SEAT_PREFIX + seatId));
 
         return savedTicket;
     }
@@ -122,16 +123,16 @@ public class TicketServiceImpl implements TicketService {
     public void deleteById(Long id) {
         Optional<Ticket> ticketOpt = ticketRepository.findById(id);
         ticketOpt.ifPresent(ticket -> {
-            cache.evict("tickets_all");
-            cache.evict("ticket_" + ticket.getId());
+            cache.evict(CacheKeys.TICKETS_ALL);
+            cache.evict(CacheKeys.TICKET_PREFIX + ticket.getId());
 
             Optional<Long> userIdOpt = ticketRepository.findUserIdById(ticket.getId());
             Optional<Long> showtimeIdOpt = ticketRepository.findShowtimeIdById(ticket.getId());
             Optional<Long> seatIdOpt = ticketRepository.findSeatIdById(ticket.getId());
 
-            userIdOpt.ifPresent(userId -> cache.evict("tickets_user_" + userId));
-            showtimeIdOpt.ifPresent(showtimeId -> cache.evict("tickets_showtime_" + showtimeId));
-            seatIdOpt.ifPresent(seatId -> cache.evict("tickets_seat_" + seatId));
+            userIdOpt.ifPresent(userId -> cache.evict(CacheKeys.TICKETS_USER_PREFIX + userId));
+            showtimeIdOpt.ifPresent(showtimeId -> cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId));
+            seatIdOpt.ifPresent(seatId -> cache.evict(CacheKeys.TICKETS_SEAT_PREFIX + seatId));
         });
 
         ticketRepository.deleteById(id);

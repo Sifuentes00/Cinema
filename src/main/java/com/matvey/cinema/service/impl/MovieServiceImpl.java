@@ -1,6 +1,7 @@
 package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.InMemoryCache;
+import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.repository.MovieRepository;
 import com.matvey.cinema.service.MovieService;
@@ -22,7 +23,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Optional<Movie> findById(Long id) {
-        String cacheKey = "movie_" + id;
+        String cacheKey = CacheKeys.MOVIE_PREFIX + id;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -38,7 +39,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> findAll() {
-        String cacheKey = "movies_all";
+        String cacheKey = CacheKeys.MOVIES_ALL;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -56,8 +57,8 @@ public class MovieServiceImpl implements MovieService {
     public Movie save(Movie movie) {
         Movie savedMovie = movieRepository.save(movie);
 
-        cache.evict("movies_all");
-        cache.evict("movie_" + savedMovie.getId());
+        cache.evict(CacheKeys.MOVIES_ALL);
+        cache.evict(CacheKeys.MOVIE_PREFIX + savedMovie.getId());
 
         return savedMovie;
     }
@@ -66,7 +67,7 @@ public class MovieServiceImpl implements MovieService {
     public void deleteById(Long id) {
         movieRepository.deleteById(id);
 
-        cache.evict("movies_all");
-        cache.evict("movie_" + id);
+        cache.evict(CacheKeys.MOVIES_ALL);
+        cache.evict(CacheKeys.MOVIE_PREFIX + id);
     }
 }

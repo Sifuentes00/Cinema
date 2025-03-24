@@ -1,5 +1,6 @@
 package com.matvey.cinema.service.impl;
 
+import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.User;
 import com.matvey.cinema.repository.UserRepository;
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Long id) {
-        String cacheKey = "user_" + id;
+        String cacheKey = CacheKeys.USER_PREFIX + id;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAll() {
-        String cacheKey = "users_all";
+        String cacheKey = CacheKeys.USERS_ALL;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -56,16 +57,16 @@ public class UserServiceImpl implements UserService {
     public User save(User user) {
         User savedUser = userRepository.save(user);
 
-        cache.evict("users_all");
-        cache.evict("user_" + savedUser.getId());
+        cache.evict(CacheKeys.USERS_ALL);
+        cache.evict(CacheKeys.USER_PREFIX + savedUser.getId());
 
         return savedUser;
     }
 
     @Override
     public void deleteById(Long id) {
-        cache.evict("users_all");
-        cache.evict("user_" + id);
+        cache.evict(CacheKeys.USERS_ALL);
+        cache.evict(CacheKeys.USER_PREFIX + id);
 
         userRepository.deleteById(id);
     }

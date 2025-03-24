@@ -1,5 +1,6 @@
 package com.matvey.cinema.service.impl;
 
+import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.Seat;
 import com.matvey.cinema.repository.SeatRepository;
@@ -22,7 +23,7 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public Optional<Seat> findById(Long id) {
-        String cacheKey = "seat_" + id;
+        String cacheKey = CacheKeys.SEAT_PREFIX + id;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -38,7 +39,7 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public List<Seat> findAll() {
-        String cacheKey = "seats_all";
+        String cacheKey = CacheKeys.SEATS_ALL;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -54,7 +55,7 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public List<Seat> findSeatsByTheaterId(Long theaterId) {
-        String cacheKey = "seats_theater_" + theaterId;
+        String cacheKey = CacheKeys.SEATS_THEATER_PREFIX + theaterId;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -74,10 +75,10 @@ public class SeatServiceImpl implements SeatService {
 
         Optional<Long> theaterIdOpt = seatRepository.findTheaterIdById(savedSeat.getId());
 
-        cache.evict("seats_all");
-        cache.evict("seat_" + savedSeat.getId());
+        cache.evict(CacheKeys.SEATS_ALL);
+        cache.evict(CacheKeys.SEAT_PREFIX + savedSeat.getId());
 
-        theaterIdOpt.ifPresent(theaterId -> cache.evict("seats_theater_" + theaterId));
+        theaterIdOpt.ifPresent(theaterId -> cache.evict(CacheKeys.SEATS_THEATER_PREFIX + theaterId));
 
         return savedSeat;
     }
@@ -88,10 +89,10 @@ public class SeatServiceImpl implements SeatService {
         seatOpt.ifPresent(seat -> {
             Optional<Long> theaterIdOpt = seatRepository.findTheaterIdById(seat.getId());
 
-            cache.evict("seats_all");
-            cache.evict("seat_" + seat.getId());
+            cache.evict(CacheKeys.SEATS_ALL);
+            cache.evict(CacheKeys.SEAT_PREFIX + seat.getId());
 
-            theaterIdOpt.ifPresent(theaterId -> cache.evict("seats_theater_" + theaterId));
+            theaterIdOpt.ifPresent(theaterId -> cache.evict(CacheKeys.SEATS_THEATER_PREFIX + theaterId));
         });
 
         seatRepository.deleteById(id);

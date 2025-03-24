@@ -1,5 +1,6 @@
 package com.matvey.cinema.service.impl;
 
+import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.Theater;
 import com.matvey.cinema.repository.TheaterRepository;
@@ -22,7 +23,7 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
     public Optional<Theater> findById(Long id) {
-        String cacheKey = "theater_" + id;
+        String cacheKey = CacheKeys.THEATER_PREFIX + id;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -38,7 +39,7 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
     public List<Theater> findAll() {
-        String cacheKey = "theaters_all";
+        String cacheKey = CacheKeys.THEATERS_ALL;
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -56,16 +57,16 @@ public class TheaterServiceImpl implements TheaterService {
     public Theater save(Theater theater) {
         Theater savedTheater = theaterRepository.save(theater);
 
-        cache.evict("theaters_all");
-        cache.evict("theater_" + savedTheater.getId());
+        cache.evict(CacheKeys.THEATERS_ALL);
+        cache.evict(CacheKeys.THEATER_PREFIX + savedTheater.getId());
 
         return savedTheater;
     }
 
     @Override
     public void deleteById(Long id) {
-        cache.evict("theaters_all");
-        cache.evict("theater_" + id);
+        cache.evict(CacheKeys.THEATERS_ALL);
+        cache.evict(CacheKeys.THEATER_PREFIX + id);
 
         theaterRepository.deleteById(id);
     }
