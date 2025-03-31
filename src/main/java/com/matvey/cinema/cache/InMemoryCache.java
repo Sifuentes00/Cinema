@@ -3,19 +3,40 @@ package com.matvey.cinema.cache;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InMemoryCache {
 
-    private final Map<String, Object> cache = new HashMap<>();
+    private final int maxSize;
+    private final long ttl; // Время жизни в миллисекундах
+    private final Map<String, CacheValue<Object>> cache;
+    private final ScheduledExecutorService scheduler;
+
+    public InMemoryCache() {
+        this.maxSize = 100;
+        this.ttl = 600000;
+        this.cache = new HashMap<>(maxSize);
+        this.scheduler = Executors.newScheduledThreadPool(1);
+        startCleanupTask();
+    }
 
     public void put(String key, Object value) {
-        cache.put(key, value);
+        if (cache.size() >= maxSize) {
+            removeEldestEntry();
+        }
+        cache.put(key, new CacheValue<>(value, System.currentTimeMillis()));
     }
 
     public Optional<Object> get(String key) {
-        return Optional.ofNullable(cache.get(key));
+        CacheValue<Object> cacheValue = cache.get(key);
+        if (cacheValue != null && !isExpired(cacheValue)) {
+            return Optional.of(cacheValue.value);
+        }
+        return Optional.empty(); // Возвращаем пустой Optional, если элемент не найден или устарел
     }
 
     public void evict(String key) {
@@ -24,5 +45,43 @@ public class InMemoryCache {
 
     public void clear() {
         cache.clear();
+    }
+
+    private boolean isExpired(CacheValue<Object> cacheValue) {
+        return (System.currentTimeMillis() - cacheValue.timestamp) > ttl;
+    }
+
+    private void removeEldestEntry() {
+        String eldestKey = null;
+        for (String key : cache.keySet()) {
+            if (eldestKey == null || cache.get(key).timestamp < cache.get(eldestKey).timestamp) {
+                eldestKey = key;
+            }
+        }
+        if (eldestKey != null) {
+            cache.remove(eldestKey);
+        }
+    }
+
+    private void startCleanupTask() {
+        scheduler.scheduleAtFixedRate(() -> {
+            synchronized (this) {
+                cache.entrySet().removeIf(entry -> isExpired(entry.getValue()));
+            }
+        }, ttl, ttl, TimeUnit.MILLISECONDS);
+    }
+
+    public void shutdown() {
+        scheduler.shutdown();
+    }
+
+    private static class CacheValue<V> {
+        V value;
+        long timestamp;
+
+        CacheValue(V value, long timestamp) {
+            this.value = value;
+            this.timestamp = timestamp;
+        }
     }
 }

@@ -38,7 +38,7 @@ public class MovieServiceImpl implements MovieService {
 
         Optional<Movie> movie = movieRepository.findById(id);
         movie.ifPresent(value -> {
-            cache.put(cacheKey, value);
+            cache.put(cacheKey, value); // Кэшируем фильм
             logger.info("Фильм с ID: {} добавлен в кэш.", id);
         });
 
@@ -57,7 +57,7 @@ public class MovieServiceImpl implements MovieService {
         }
 
         List<Movie> movies = movieRepository.findAll();
-        cache.put(cacheKey, movies);
+        cache.put(cacheKey, movies); // Кэшируем список фильмов
         logger.info("Все фильмы добавлены в кэш.");
 
         return movies;
@@ -68,6 +68,7 @@ public class MovieServiceImpl implements MovieService {
         logger.info("Сохранение фильма: {}", movie);
         Movie savedMovie = movieRepository.save(movie);
 
+        // Очищаем кэш для всех фильмов и конкретного фильма
         cache.evict(CacheKeys.MOVIES_ALL);
         cache.evict(CacheKeys.MOVIE_PREFIX + savedMovie.getId());
         logger.info("Фильм с ID: {} успешно сохранен и кэш очищен.", savedMovie.getId());
@@ -80,6 +81,7 @@ public class MovieServiceImpl implements MovieService {
         logger.info("Удаление фильма с ID: {}", id);
         movieRepository.deleteById(id);
 
+        // Очищаем кэш для всех фильмов и конкретного фильма
         cache.evict(CacheKeys.MOVIES_ALL);
         cache.evict(CacheKeys.MOVIE_PREFIX + id);
         logger.info("Фильм с ID: {} успешно удален и кэш очищен.", id);
