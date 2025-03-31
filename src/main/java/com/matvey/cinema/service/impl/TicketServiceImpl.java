@@ -160,11 +160,13 @@ public class TicketServiceImpl implements TicketService {
 
             userIdOpt.ifPresent(userId -> {
                 cache.evict(CacheKeys.TICKETS_USER_PREFIX + userId);
-                logger.info("Кэш для билетов пользователя с ID '{}' очищен при удалении билета.", userId);
+                logger.info("Кэш для билетов пользователя с ID '{}' очищен при удалении билета.",
+                        userId);
             });
             showtimeIdOpt.ifPresent(showtimeId -> {
                 cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId);
-                logger.info("Кэш для билетов сеанса с ID '{}' очищен при удалении билета.", showtimeId);
+                logger.info("Кэш для билетов сеанса с ID '{}' очищен при удалении билета.",
+                        showtimeId);
             });
             seatIdOpt.ifPresent(seatId -> {
                 cache.evict(CacheKeys.TICKETS_SEAT_PREFIX + seatId);

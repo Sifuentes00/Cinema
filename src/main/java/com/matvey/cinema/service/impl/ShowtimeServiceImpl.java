@@ -136,11 +136,13 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
             theaterIdOpt.ifPresent(theaterId -> {
                 cache.evict(CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId);
-                logger.info("Кэш для сеансов театра с ID '{}' очищен при удалении сеанса.", theaterId);
+                logger.info("Кэш для сеансов театра с ID '{}' очищен при удалении сеанса.",
+                        theaterId);
             });
             movieIdOpt.ifPresent(movieId -> {
                 cache.evict(CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieId);
-                logger.info("Кэш для сеансов фильма с ID '{}' очищен при удалении сеанса.", movieId);
+                logger.info("Кэш для сеансов фильма с ID '{}' очищен при удалении сеанса.",
+                        movieId);
             });
 
             logger.info("Сеанс с ID: {} успешно удален и кэш очищен.", showtime.getId());
