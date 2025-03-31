@@ -36,7 +36,7 @@ public class InMemoryCache {
         if (cacheValue != null && !isExpired(cacheValue)) {
             return Optional.of(cacheValue.value);
         }
-        return Optional.empty(); // Возвращаем пустой Optional, если элемент не найден или устарел
+        return Optional.empty();
     }
 
     public void evict(String key) {
