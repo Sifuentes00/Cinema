@@ -119,7 +119,6 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket save(Ticket ticket) {
-        logger.info("Сохранение билета: {}", ticket);
         Ticket savedTicket = ticketRepository.save(ticket);
 
         cache.evict(CacheKeys.TICKETS_ALL);

@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        logger.info("Сохранение пользователя: {}", user);
         User savedUser = userRepository.save(user);
 
         cache.evict(CacheKeys.USERS_ALL);

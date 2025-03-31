@@ -65,7 +65,6 @@ public class TheaterServiceImpl implements TheaterService {
 
     @Override
     public Theater save(Theater theater) {
-        logger.info("Сохранение театра: {}", theater);
         Theater savedTheater = theaterRepository.save(theater);
 
         cache.evict(CacheKeys.THEATERS_ALL);

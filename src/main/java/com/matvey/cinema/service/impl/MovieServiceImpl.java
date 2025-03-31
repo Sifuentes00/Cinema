@@ -65,7 +65,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie save(Movie movie) {
-        logger.info("Сохранение фильма: {}", movie);
         Movie savedMovie = movieRepository.save(movie);
 
         // Очищаем кэш для всех фильмов и конкретного фильма

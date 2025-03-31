@@ -116,7 +116,6 @@ public class ReviewServiceImpl implements ReviewService {
     public Review save(Review review) {
         Review savedReview = reviewRepository.save(review);
 
-        // Очищаем кэш для всех отзывов и для конкретного отзыва
         cache.evict(CacheKeys.REVIEWS_ALL);
         cache.evict(CacheKeys.REVIEW_PREFIX + savedReview.getId());
         cache.evict(CacheKeys.REVIEWS_CONTENT_PREFIX + savedReview.getContent());

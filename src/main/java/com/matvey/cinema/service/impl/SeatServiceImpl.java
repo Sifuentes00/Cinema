@@ -83,7 +83,6 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public Seat save(Seat seat) {
-        logger.info("Сохранение места: {}", seat);
         Seat savedSeat = seatRepository.save(seat);
 
         Optional<Long> theaterIdOpt = seatRepository.findTheaterIdById(savedSeat.getId());

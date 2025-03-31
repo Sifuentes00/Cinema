@@ -101,7 +101,6 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
     @Override
     public Showtime save(Showtime showtime) {
-        logger.info("Сохранение сеанса: {}", showtime);
         Showtime savedShowtime = showtimeRepository.save(showtime);
 
         cache.evict(CacheKeys.SHOWTIMES_ALL);
