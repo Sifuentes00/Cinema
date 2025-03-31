@@ -66,17 +66,17 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<Showtime> findShowtimesByTheaterName(String theaterName) {
         String cacheKey = CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterName;
-        logger.info("Поиск сеансов для театра: {}", theaterName);
+        logger.info("Поиск сеансов для театра");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Сеансы для театра '{}' найдены в кэше.", theaterName);
+            logger.info("Сеансы для театра найдены в кэше.");
             return (List<Showtime>) cachedData.get();
         }
 
         List<Showtime> showtimes = showtimeRepository.findShowtimesByTheaterName(theaterName);
         cache.put(cacheKey, showtimes);
-        logger.info("Сеансы для театра '{}' добавлены в кэш.", theaterName);
+        logger.info("Сеансы для театра добавлены в кэш.");
 
         return showtimes;
     }
@@ -84,17 +84,17 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<Showtime> findShowtimesByMovieTitle(String movieTitle) {
         String cacheKey = CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieTitle;
-        logger.info("Поиск сеансов для фильма: {}", movieTitle);
+        logger.info("Поиск сеансов для фильма");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Сеансы для фильма '{}' найдены в кэше.", movieTitle);
+            logger.info("Сеансы для фильма найдены в кэше.");
             return (List<Showtime>) cachedData.get();
         }
 
         List<Showtime> showtimes = showtimeRepository.findShowtimesByMovieTitle(movieTitle);
         cache.put(cacheKey, showtimes);
-        logger.info("Сеансы для фильма '{}' добавлены в кэш.", movieTitle);
+        logger.info("Сеансы для фильма добавлены в кэш.");
 
         return showtimes;
     }

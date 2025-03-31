@@ -67,13 +67,13 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Отзывы по содержимому '{}' отозваны из кэша.", content);
+            logger.info("Отзывы по содержимому отозваны из кэша.");
             return (List<Review>) cachedData.get();
         }
 
         List<Review> reviews = reviewRepository.findReviewsByContent(content);
         cache.put(cacheKey, reviews);
-        logger.info("Отзывы по содержимому '{}' добавлены в кэш.", content);
+        logger.info("Отзывы по содержимому добавлены в кэш.");
 
         return reviews;
     }
@@ -84,13 +84,13 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Отзывы по фильму '{}' отозваны из кэша.", movieTitle);
+            logger.info("Отзывы по фильму отозваны из кэша.");
             return (List<Review>) cachedData.get();
         }
 
         List<Review> reviews = reviewRepository.findReviewsByMovieTitle(movieTitle);
         cache.put(cacheKey, reviews);
-        logger.info("Отзывы по фильму '{}' добавлены в кэш.", movieTitle);
+        logger.info("Отзывы по фильму добавлены в кэш.");
 
         return reviews;
     }
@@ -101,13 +101,13 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Отзывы пользователя '{}' отозваны из кэша.", userUsername);
+            logger.info("Отзывы пользователя отозваны из кэша.");
             return (List<Review>) cachedData.get();
         }
 
         List<Review> reviews = reviewRepository.findReviewsByUserUsername(userUsername);
         cache.put(cacheKey, reviews);
-        logger.info("Отзывы пользователя '{}' добавлены в кэш.", userUsername);
+        logger.info("Отзывы пользователя  добавлены в кэш.");
 
         return reviews;
     }

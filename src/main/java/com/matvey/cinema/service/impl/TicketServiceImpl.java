@@ -66,17 +66,17 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Ticket> findTicketsByUserUsername(String userUsername) {
         String cacheKey = CacheKeys.TICKETS_USER_PREFIX + userUsername;
-        logger.info("Поиск билетов для пользователя: {}", userUsername);
+        logger.info("Поиск билетов для пользователя");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Билеты для пользователя '{}' найдены в кэше.", userUsername);
+            logger.info("Билеты для пользователя найдены в кэше.");
             return (List<Ticket>) cachedData.get();
         }
 
         List<Ticket> tickets = ticketRepository.findTicketsByUserUsername(userUsername);
         cache.put(cacheKey, tickets);
-        logger.info("Билеты для пользователя '{}' добавлены в кэш.", userUsername);
+        logger.info("Билеты для пользователя добавлены в кэш.");
 
         return tickets;
     }
@@ -84,17 +84,17 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Ticket> findTicketsByShowtimeDateTime(String showtimeDateTime) {
         String cacheKey = CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeDateTime;
-        logger.info("Поиск билетов для времени сеанса: {}", showtimeDateTime);
+        logger.info("Поиск билетов для времени сеанса");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Билеты для времени сеанса '{}' найдены в кэше.", showtimeDateTime);
+            logger.info("Билеты для времени сеанса найдены в кэше.");
             return (List<Ticket>) cachedData.get();
         }
 
         List<Ticket> tickets = ticketRepository.findTicketsByShowtimeDateTime(showtimeDateTime);
         cache.put(cacheKey, tickets);
-        logger.info("Билеты для времени сеанса '{}' добавлены в кэш.", showtimeDateTime);
+        logger.info("Билеты для времени сеанса добавлены в кэш.");
 
         return tickets;
     }

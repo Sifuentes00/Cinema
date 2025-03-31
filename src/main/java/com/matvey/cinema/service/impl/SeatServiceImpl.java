@@ -66,17 +66,17 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public List<Seat> findSeatsByTheaterName(String theaterName) {
         String cacheKey = CacheKeys.SEATS_THEATER_PREFIX + theaterName;
-        logger.info("Поиск мест для театра: {}", theaterName);
+        logger.info("Поиск мест для театра");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
-            logger.info("Места для театра '{}' найдены в кэше.", theaterName);
+            logger.info("Места для театра найдены в кэше.");
             return (List<Seat>) cachedData.get();
         }
 
         List<Seat> seats = seatRepository.findSeatsByTheaterName(theaterName);
         cache.put(cacheKey, seats);
-        logger.info("Места для театра '{}' добавлены в кэш.", theaterName);
+        logger.info("Места для театра добавлены в кэш.");
 
         return seats;
     }
