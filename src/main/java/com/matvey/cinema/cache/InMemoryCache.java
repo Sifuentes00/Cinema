@@ -53,11 +53,15 @@ public class InMemoryCache {
 
     private void removeEldestEntry() {
         String eldestKey = null;
-        for (String key : cache.keySet()) {
-            if (eldestKey == null || cache.get(key).timestamp < cache.get(eldestKey).timestamp) {
-                eldestKey = key;
+        long eldestTimestamp = Long.MAX_VALUE;
+
+        for (Map.Entry<String, CacheValue<Object>> entry : cache.entrySet()) {
+            if (entry.getValue().timestamp < eldestTimestamp) {
+                eldestTimestamp = entry.getValue().timestamp;
+                eldestKey = entry.getKey();
             }
         }
+
         if (eldestKey != null) {
             cache.remove(eldestKey);
         }
