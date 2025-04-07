@@ -66,12 +66,14 @@ public class LoggingAspect {
 
     private boolean shouldLog(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
-        return methodName.startsWith("get");
+        return methodName.startsWith("get") || methodName.startsWith("post")
+                || methodName.startsWith("put") || methodName.startsWith("delete");
     }
 
     private boolean shouldLogArguments(JoinPoint joinPoint) {
-        // Условие для логирования аргументов
-        return true; // Здесь можно добавить свою логику
+        String methodName = joinPoint.getSignature().getName();
+        return methodName.startsWith("get") || methodName.startsWith("post")
+                || methodName.startsWith("put") || methodName.startsWith("delete");
     }
 
     private String logArguments(JoinPoint joinPoint) {
