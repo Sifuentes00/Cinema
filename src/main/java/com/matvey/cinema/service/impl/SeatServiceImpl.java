@@ -71,7 +71,7 @@ public class SeatServiceImpl implements SeatService {
     @Override
     public List<Seat> findSeatsByTheaterName(String theaterName) {
         String cacheKey = CacheKeys.SEATS_THEATER_PREFIX + theaterName;
-        logger.info("Поиск мест для театра: {}", theaterName);
+        logger.info("Поиск мест для театра:");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {

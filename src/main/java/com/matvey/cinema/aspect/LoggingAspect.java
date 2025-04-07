@@ -27,7 +27,7 @@ public class LoggingAspect {
             logger.debug("Entering: {}.{}() with arguments = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(),
-                    shouldLogArguments(joinPoint) ? logArguments(joinPoint) : "Arguments not logged"
+                    logArguments(joinPoint)
             );
         }
         try {
@@ -64,10 +64,6 @@ public class LoggingAspect {
     private boolean shouldLog(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         return methodName.startsWith("get");
-    }
-
-    private boolean shouldLogArguments(JoinPoint joinPoint) {
-        return true;
     }
 
     private String logArguments(JoinPoint joinPoint) {

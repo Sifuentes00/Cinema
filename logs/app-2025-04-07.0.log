@@ -7963,3 +7963,60 @@ org.springframework.web.server.ResponseStatusException: 404 NOT_FOUND "Log files
 2025-04-07 05:54:18.981 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-04-07 05:54:18.986 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2025-04-07 05:54:19.008 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-04-07 06:37:13.754 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-04-07 06:37:13.770 [main] INFO  com.matvey.cinema.CinemaApplication - Starting CinemaApplication using Java 23.0.2 with PID 39614 (/Users/matveyvasiluk/Documents/java/JavaSpring/Cinema/target/classes started by matveyvasiluk in /Users/matveyvasiluk/Documents/java/JavaSpring/Cinema)
+2025-04-07 06:37:13.770 [main] DEBUG com.matvey.cinema.CinemaApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-04-07 06:37:13.771 [main] INFO  com.matvey.cinema.CinemaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-04-07 06:37:14.150 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-07 06:37:14.173 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 18 ms. Found 7 JPA repository interfaces.
+2025-04-07 06:37:14.431 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-04-07 06:37:14.436 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-04-07 06:37:14.437 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-04-07 06:37:14.437 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-04-07 06:37:14.454 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-04-07 06:37:14.454 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 666 ms
+2025-04-07 06:37:14.560 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-07 06:37:14.584 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-04-07 06:37:14.596 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-04-07 06:37:14.696 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-07 06:37:14.707 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-04-07 06:37:14.917 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1e2b37cd
+2025-04-07 06:37:14.918 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-04-07 06:37:14.950 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-07 06:37:14.950 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-04-07 06:37:14.955 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-07 06:37:15.321 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-07 06:37:15.390 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-07 06:37:15.510 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-07 06:37:15.852 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-07 06:37:16.149 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-04-07 06:37:16.181 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-04-07 06:37:16.187 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-04-07 06:37:16.195 [main] INFO  com.matvey.cinema.CinemaApplication - Started CinemaApplication in 2.553 seconds (process running for 2.912)
+2025-04-07 06:37:16.371 [RMI TCP Connection(1)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-07 06:37:16.371 [RMI TCP Connection(1)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-04-07 06:37:16.372 [RMI TCP Connection(1)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-04-07 06:37:22.284 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.LogController.getAllLogFileByDate() with arguments = [2025-04-07]
+2025-04-07 06:37:22.305 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.LogController.getAllLogFileByDate() with result = <200 OK OK,Byte array resource [resource loaded from byte array],[Content-Disposition:"attachment; filename=app-2025-04-07.log", Content-Type:"text/plain", Content-Length:"951084"]>
+2025-04-07 06:37:34.887 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.TicketController.getTicketsByShowtimeDateTime() with arguments = [17.04.2025 13:00]
+2025-04-07 06:37:34.891 [http-nio-8080-exec-3] DEBUG c.m.c.controllers.TicketController - Запрос на получение билетов для времени сеанса
+2025-04-07 06:37:34.893 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.TicketServiceImpl - Поиск билетов для времени сеанса: 17.04.2025 13:00
+2025-04-07 06:37:35.047 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.TicketServiceImpl - Билеты для времени сеанса добавлены в кэш.
+2025-04-07 06:37:35.048 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.TicketController.getTicketsByShowtimeDateTime() with result = <200 OK OK,[com.matvey.cinema.model.entities.Ticket@55608d6b, com.matvey.cinema.model.entities.Ticket@4d2cc3f6],[]>
+2025-04-07 06:37:36.065 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.TicketController.getTicketsByShowtimeDateTime() with arguments = [17.04.2025 13:00]
+2025-04-07 06:37:36.068 [http-nio-8080-exec-4] DEBUG c.m.c.controllers.TicketController - Запрос на получение билетов для времени сеанса
+2025-04-07 06:37:36.070 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.TicketServiceImpl - Поиск билетов для времени сеанса: 17.04.2025 13:00
+2025-04-07 06:37:36.071 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.TicketServiceImpl - Билеты для времени сеанса найдены в кэше.
+2025-04-07 06:37:36.073 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.TicketController.getTicketsByShowtimeDateTime() with result = <200 OK OK,[com.matvey.cinema.model.entities.Ticket@55608d6b, com.matvey.cinema.model.entities.Ticket@4d2cc3f6],[]>
+2025-04-07 06:38:06.871 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-07 06:38:06.877 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-04-07 06:38:06.885 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-07 06:38:06.888 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-04-07 06:38:06.895 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

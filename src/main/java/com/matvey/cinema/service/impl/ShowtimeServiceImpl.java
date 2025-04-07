@@ -72,7 +72,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<Showtime> findShowtimesByTheaterName(String theaterName) {
         String cacheKey = CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterName;
-        logger.info("Поиск сеансов для театра: {}", theaterName);
+        logger.info("Поиск сеансов для театра");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -90,7 +90,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<Showtime> findShowtimesByMovieTitle(String movieTitle) {
         String cacheKey = CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieTitle;
-        logger.info("Поиск сеансов для фильма: {}", movieTitle);
+        logger.info("Поиск сеансов для фильма:");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {

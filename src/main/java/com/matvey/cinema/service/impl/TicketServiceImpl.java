@@ -72,7 +72,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Ticket> findTicketsByUserUsername(String userUsername) {
         String cacheKey = CacheKeys.TICKETS_USER_PREFIX + userUsername;
-        logger.info("Поиск билетов для пользователя: {}", userUsername);
+        logger.info("Поиск билетов для пользователя");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -90,7 +90,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Ticket> findTicketsByShowtimeDateTime(String showtimeDateTime) {
         String cacheKey = CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeDateTime;
-        logger.info("Поиск билетов для времени сеанса: {}", showtimeDateTime);
+        logger.info("Поиск билетов для времени сеанса");
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
