@@ -73,7 +73,8 @@ public class LoggingAspect {
     private boolean shouldLogArguments(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         return methodName.startsWith("get") || methodName.startsWith("post")
-                || methodName.startsWith("put") || methodName.startsWith("delete");
+                || methodName.startsWith("put") || methodName.startsWith("delete")
+                || methodName.startsWith("patch");
     }
 
     private String logArguments(JoinPoint joinPoint) {
