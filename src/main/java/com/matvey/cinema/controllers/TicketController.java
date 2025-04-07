@@ -80,7 +80,7 @@ public class TicketController {
         logger.debug("Запрос на получение билетов для пользователя");
         List<Ticket> tickets = ticketService.findTicketsByUserUsername(userUsername);
         if (tickets.isEmpty()) {
-            logger.warn("Билеты для пользователя {} не найдены", userUsername);
+            logger.warn("Билеты для пользователя не найдены");
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(tickets);
@@ -95,7 +95,7 @@ public class TicketController {
         logger.debug("Запрос на получение билетов для времени сеанса");
         List<Ticket> tickets = ticketService.findTicketsByShowtimeDateTime(showtimeDateTime);
         if (tickets.isEmpty()) {
-            logger.warn("Билеты для времени сеанса {} не найдены", showtimeDateTime);
+            logger.warn("Билеты для времени сеанса не найдены");
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(tickets);

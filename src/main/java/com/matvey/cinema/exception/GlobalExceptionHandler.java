@@ -2,12 +2,10 @@ package com.matvey.cinema.exception;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,12 +20,11 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>> handleValidationExceptions(MethodArgumentNotValidException
-                                                                               ex) {
+    public ResponseEntity<List<String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         logger.error("Ошибка валидации: {}", ex.getMessage(), ex);
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 

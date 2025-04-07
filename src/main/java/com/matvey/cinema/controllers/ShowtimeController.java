@@ -78,7 +78,7 @@ public class ShowtimeController {
         logger.debug("Запрос на получение сеансов для театра");
         List<Showtime> showtimes = showtimeService.findShowtimesByTheaterName(theaterName);
         if (showtimes.isEmpty()) {
-            logger.warn("Сеансы для театра {} не найдены", theaterName);
+            logger.warn("Сеансы для театра не найдены");
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(showtimes);
@@ -92,7 +92,7 @@ public class ShowtimeController {
         logger.debug("Запрос на получение сеансов для фильма");
         List<Showtime> showtimes = showtimeService.findShowtimesByMovieTitle(movieTitle);
         if (showtimes.isEmpty()) {
-            logger.warn("Сеансы для фильма {} не найдены", movieTitle);
+            logger.warn("Сеансы для фильма не найдены");
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(showtimes);
