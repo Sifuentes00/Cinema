@@ -23,34 +23,46 @@ public class LoggingAspect {
 
     @Around("applicationPackagePointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        logger.debug("Entering: {}.{}() with arguments = {}",
-                joinPoint.getSignature().getDeclaringTypeName(),
-                joinPoint.getSignature().getName(),
-                Arrays.toString(joinPoint.getArgs())
-        );
-        try {
-            Object result = joinPoint.proceed();
-            logger.debug("Exiting: {}.{}() with result = {}",
-                    joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), result
-            );
-            return result;
-        } catch (Throwable e) {
-            logger.error("Exception in {}.{}() with cause = {}",
+        if (shouldLog(joinPoint)) {
+            logger.debug("Entering: {}.{}() with arguments = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(),
-                    e.getCause() != null ? e.getCause() : "NULL", e
+                    Arrays.toString(joinPoint.getArgs())
             );
-            throw e; // повторно выбрасываем исключение
+        }
+        try {
+            Object result = joinPoint.proceed();
+            if (shouldLog(joinPoint)) {
+                logger.debug("Exiting: {}.{}() with result = {}",
+                        joinPoint.getSignature().getDeclaringTypeName(),
+                        joinPoint.getSignature().getName(), result
+                );
+            }
+            return result;
+        } catch (Throwable e) {
+            if (shouldLog(joinPoint)) {
+                logger.error("Exception in {}.{}() with cause = {}",
+                        joinPoint.getSignature().getDeclaringTypeName(),
+                        joinPoint.getSignature().getName(),
+                        e.getCause() != null ? e.getCause() : "NULL", e
+                );
+            }
+            throw e;
         }
     }
 
     @AfterThrowing(pointcut = "applicationPackagePointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        logger.error("Exception in {}.{}() with cause = {}",
-                joinPoint.getSignature().getDeclaringTypeName(),
-                joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL", e
-        );
+        if (shouldLog(joinPoint)) {
+            logger.error("Exception in {}.{}() with cause = {}",
+                    joinPoint.getSignature().getDeclaringTypeName(),
+                    joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL", e
+            );
+        }
+    }
+
+    private boolean shouldLog(JoinPoint joinPoint) {
+        String methodName = joinPoint.getSignature().getName();
+        return methodName.startsWith("get");
     }
 }
-

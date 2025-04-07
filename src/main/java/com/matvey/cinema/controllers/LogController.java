@@ -39,12 +39,12 @@ public class LogController {
     @Operation(summary = "Получить лог файл по дате и ротации",
             description = "Возвращает лог файл за указанную дату и номер ротации.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Лог файл успешно получен",
+        @ApiResponse(responseCode = "200", description = "Лог файл успешно получен",
                     content = @Content(mediaType = "text/plain",
                             schema = @Schema(type = "string", format = "binary"))),
-            @ApiResponse(responseCode = "404",
+        @ApiResponse(responseCode = "404",
                     description = "Лог файл не найден", content = @Content),
-            @ApiResponse(responseCode = "500",
+        @ApiResponse(responseCode = "500",
                     description = "Ошибка при чтении лог файла", content = @Content)
     })
     @GetMapping("/{date}")
@@ -56,19 +56,22 @@ public class LogController {
     ) {
         try {
             LocalDate logDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
-            String logFileName = "app-" + logDate.format(DATE_FORMATTER) + "." + rotation + ".log";
-            Path logFilePath = Paths.get(LOG_DIRECTORY, logFileName);
+            String logFileName;
+            Path logFilePath;
 
-            // Проверка существования файла
+            logFileName = "app-"
+                    + logDate.format(DATE_FORMATTER)
+                    + "." + rotation + ".log";
+            logFilePath = Paths.get(LOG_DIRECTORY, logFileName);
+
             if (!Files.exists(logFilePath)) {
-                String reason = "Лог файл не найден для даты: " + date;
+                String reason = "Log file not found for date: " + date;
                 if (rotation != null) {
-                    reason += " и ротации: " + rotation;
+                    reason += " and rotation: " + rotation;
                 }
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
             }
 
-            // Чтение файла
             ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(logFilePath));
 
             HttpHeaders headers = new HttpHeaders();
@@ -83,7 +86,7 @@ public class LogController {
         } catch (IOException e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Ошибка при чтении лог файла", e
+                    "Error reading log file", e
             );
         }
     }
@@ -91,45 +94,41 @@ public class LogController {
     @Operation(summary = "Получить все лог файлы за дату",
             description = "Возвращает все лог файлы за указанную дату, включая все ротации.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Лог файлы успешно получены",
+        @ApiResponse(responseCode = "200", description = "Лог файлы успешно получены",
                     content = @Content(mediaType = "text/plain",
                             schema = @Schema(type = "string", format = "binary"))),
-            @ApiResponse(responseCode = "404",
-                    description = "Лог файлы не найдены", content = @Content),
-            @ApiResponse(responseCode = "500",
-                    description = "Ошибка при чтении лог файлов", content = @Content)
+        @ApiResponse(responseCode = "404",
+                description = "Лог файлы не найдены", content = @Content),
+        @ApiResponse(responseCode = "500",
+                description = "Ошибка при чтении лог файлов", content = @Content)
     })
     @GetMapping("/all/{date}")
     public ResponseEntity<Resource> getAllLogFileByDate(
             @Parameter(description = "Дата логов в формате YYYY-MM-DD",
                     example = "2023-10-27") @PathVariable String date) {
-
         try {
             LocalDate logDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
-            String logFileNamePattern = "app-" + logDate.format(DATE_FORMATTER) + ".*.log";
+            String logFileNamePattern = "app-"
+                    + logDate.format(DATE_FORMATTER) + ".*.log";
             Path logDirectoryPath = Paths.get(LOG_DIRECTORY);
 
-            // Проверка существования директории логов
             if (!Files.exists(logDirectoryPath) || !Files.isDirectory(logDirectoryPath)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Директория логов не найдена");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Log directory not found");
             }
 
-            // Получение всех файлов, соответствующих шаблону
             java.util.List<Path> matchingFiles = Files.list(logDirectoryPath)
                     .filter(path -> path.getFileName().toString()
                             .matches(logFileNamePattern.replace(".", "\\.")
                                     .replace("*", ".*")))
                     .toList();
 
-            // Проверка наличия найденных файлов
             if (matchingFiles.isEmpty()) {
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Лог файлы не найдены для даты: " + date
+                        "Log files not found for date: " + date
                 );
             }
 
-            // Чтение содержимого всех найденных файлов
             StringBuilder combinedLogContent = new StringBuilder();
             for (Path logFilePath : matchingFiles) {
                 combinedLogContent.append(new String(Files.readAllBytes(logFilePath))).append("\n");
@@ -141,7 +140,9 @@ public class LogController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION,
-                    "attachment; filename=app-" + logDate.format(DATE_FORMATTER) + ".log");
+                    "attachment; filename=app-"
+                            + logDate.format(DATE_FORMATTER) + ".log"
+            );
             headers.setContentType(MediaType.TEXT_PLAIN);
 
             return ResponseEntity.ok()
@@ -152,7 +153,7 @@ public class LogController {
         } catch (IOException e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Ошибка при чтении лог файлов", e
+                    "Error reading log files", e
             );
         }
     }
