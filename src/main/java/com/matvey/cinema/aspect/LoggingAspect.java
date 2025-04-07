@@ -27,7 +27,7 @@ public class LoggingAspect {
             logger.debug("Entering: {}.{}() with arguments = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(),
-                    Arrays.toString(joinPoint.getArgs())
+                    logArguments(joinPoint)
             );
         }
         try {
@@ -64,5 +64,9 @@ public class LoggingAspect {
     private boolean shouldLog(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         return methodName.startsWith("get");
+    }
+
+    private String logArguments(JoinPoint joinPoint) {
+        return Arrays.toString(joinPoint.getArgs());
     }
 }

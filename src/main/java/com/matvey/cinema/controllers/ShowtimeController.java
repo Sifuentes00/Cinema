@@ -75,7 +75,7 @@ public class ShowtimeController {
             description = "Возвращает список сеансов для указанного театра")
     public ResponseEntity<List<Showtime>> getShowtimesByTheaterName(
             @RequestParam String theaterName) {
-        logger.debug("Запрос на получение сеансов для театра: {}", theaterName);
+        logger.debug("Запрос на получение сеансов для театра");
         List<Showtime> showtimes = showtimeService.findShowtimesByTheaterName(theaterName);
         if (showtimes.isEmpty()) {
             logger.warn("Сеансы для театра {} не найдены", theaterName);
@@ -89,7 +89,7 @@ public class ShowtimeController {
             description = "Возвращает список сеансов для указанного фильма")
     public ResponseEntity<List<Showtime>> getShowtimesByMovieTitle(
             @RequestParam String movieTitle) {
-        logger.debug("Запрос на получение сеансов для фильма: {}", movieTitle);
+        logger.debug("Запрос на получение сеансов для фильма");
         List<Showtime> showtimes = showtimeService.findShowtimesByMovieTitle(movieTitle);
         if (showtimes.isEmpty()) {
             logger.warn("Сеансы для фильма {} не найдены", movieTitle);

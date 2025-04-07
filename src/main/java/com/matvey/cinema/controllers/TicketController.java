@@ -77,7 +77,7 @@ public class TicketController {
     public ResponseEntity<List<Ticket>> getTicketsByUserUsername(
             @Parameter(description = "Имя пользователя", example = "john_doe")
             @RequestParam String userUsername) {
-        logger.debug("Запрос на получение билетов для пользователя: {}", userUsername);
+        logger.debug("Запрос на получение билетов для пользователя");
         List<Ticket> tickets = ticketService.findTicketsByUserUsername(userUsername);
         if (tickets.isEmpty()) {
             logger.warn("Билеты для пользователя {} не найдены", userUsername);
@@ -92,7 +92,7 @@ public class TicketController {
     public ResponseEntity<List<Ticket>> getTicketsByShowtimeDateTime(
             @Parameter(description = "Время сеанса", example = "17.04.2025 13:00")
             @RequestParam String showtimeDateTime) {
-        logger.debug("Запрос на получение билетов для времени сеанса: {}", showtimeDateTime);
+        logger.debug("Запрос на получение билетов для времени сеанса");
         List<Ticket> tickets = ticketService.findTicketsByShowtimeDateTime(showtimeDateTime);
         if (tickets.isEmpty()) {
             logger.warn("Билеты для времени сеанса {} не найдены", showtimeDateTime);

@@ -92,7 +92,7 @@ public class ReviewController {
     })
     public ResponseEntity<List<Review>> getReviewsByMovieTitle(
             @RequestParam String movieTitle) {
-        logger.debug("Запрос на получение отзывов для фильма: {}", movieTitle);
+        logger.debug("Запрос на получение отзывов для фильма");
         List<Review> reviews = reviewService.findReviewsByMovieTitle(movieTitle);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -111,7 +111,7 @@ public class ReviewController {
     })
     public ResponseEntity<List<Review>> getReviewsByUserUsername(
             @RequestParam String userUsername) {
-        logger.debug("Запрос на получение отзывов для пользователя: {}", userUsername);
+        logger.debug("Запрос на получение отзывов для пользователя");
         List<Review> reviews = reviewService.findReviewsByUserUsername(userUsername);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -130,7 +130,7 @@ public class ReviewController {
     })
     public ResponseEntity<List<Review>> getReviewsByContent(
             @RequestParam String content) {
-        logger.debug("Запрос на получение отзывов, содержащих текст: {}", content);
+        logger.debug("Запрос на получение отзывов, содержащих текст");
         List<Review> reviews = reviewService.findReviewsByContent(content);
         if (reviews.isEmpty()) {
             return ResponseEntity.noContent().build();

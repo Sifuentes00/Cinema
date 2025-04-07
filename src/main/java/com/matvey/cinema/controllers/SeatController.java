@@ -92,7 +92,7 @@ public class SeatController {
     })
     public ResponseEntity<List<Seat>> getSeatsByTheaterId(
             @RequestParam String theaterName) {
-        logger.debug("Запрос на получение мест для театра: {}", theaterName);
+        logger.debug("Запрос на получение мест для театра");
         List<Seat> seats = seatService.findSeatsByTheaterName(theaterName);
         if (seats.isEmpty()) {
             return ResponseEntity.noContent().build();
