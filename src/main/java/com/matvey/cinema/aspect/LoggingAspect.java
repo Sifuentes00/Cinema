@@ -24,10 +24,12 @@ public class LoggingAspect {
     @Around("applicationPackagePointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         if (shouldLog(joinPoint)) {
+            String arguments = shouldLogArguments(joinPoint) ? logArguments(joinPoint) :
+                    "Arguments not logged";
             logger.debug("Entering: {}.{}() with arguments = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(),
-                    logArguments(joinPoint)
+                    arguments
             );
         }
         try {
@@ -56,7 +58,8 @@ public class LoggingAspect {
         if (shouldLog(joinPoint)) {
             logger.error("Exception in {}.{}() with cause = {}",
                     joinPoint.getSignature().getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() : "NULL", e
+                    joinPoint.getSignature().getName(), e.getCause() != null ? e.getCause() :
+                            "NULL", e
             );
         }
     }
@@ -64,6 +67,11 @@ public class LoggingAspect {
     private boolean shouldLog(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         return methodName.startsWith("get");
+    }
+
+    private boolean shouldLogArguments(JoinPoint joinPoint) {
+        // Условие для логирования аргументов
+        return true; // Здесь можно добавить свою логику
     }
 
     private String logArguments(JoinPoint joinPoint) {
