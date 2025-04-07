@@ -2,6 +2,7 @@ package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
+import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.entities.Review;
 import com.matvey.cinema.repository.ReviewRepository;
 import com.matvey.cinema.service.ReviewService;
@@ -36,6 +37,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         Optional<Review> review = reviewRepository.findById(id);
+        if (review.isEmpty()) {
+            throw new CustomNotFoundException("Отзыв не найден с ID: " + id);
+        }
+
         review.ifPresent(value -> {
             cache.put(cacheKey, value);
             logger.info("Данные добавлены в кэш для ключа: {}", cacheKey);
@@ -107,7 +112,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<Review> reviews = reviewRepository.findReviewsByUserUsername(userUsername);
         cache.put(cacheKey, reviews);
-        logger.info("Отзывы пользователя  добавлены в кэш.");
+        logger.info("Отзывы пользователя добавлены в кэш.");
 
         return reviews;
     }
@@ -139,28 +144,31 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteById(Long id) {
         Optional<Review> reviewOpt = reviewRepository.findById(id);
-        reviewOpt.ifPresent(review -> {
-            cache.evict(CacheKeys.REVIEWS_ALL);
-            cache.evict(CacheKeys.REVIEW_PREFIX + review.getId());
-            cache.evict(CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent());
+        if (reviewOpt.isEmpty()) {
+            throw new CustomNotFoundException("Отзыв не найден с ID: " + id);
+        }
 
-            Optional<Long> movieIdOpt = reviewRepository.findMovieIdById(review.getId());
-            Optional<Long> userIdOpt = reviewRepository.findUserIdById(review.getId());
+        Review review = reviewOpt.get();
+        cache.evict(CacheKeys.REVIEWS_ALL);
+        cache.evict(CacheKeys.REVIEW_PREFIX + review.getId());
+        cache.evict(CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent());
 
-            movieIdOpt.ifPresent(movieId -> {
-                cache.evict(CacheKeys.REVIEWS_MOVIE_PREFIX + movieId);
-                logger.info("Кэш для отзывов по фильму с ID '{}' очищен при удалении отзыва.",
-                        movieId);
-            });
-            userIdOpt.ifPresent(userId -> {
-                cache.evict(CacheKeys.REVIEWS_USER_PREFIX + userId);
-                logger.info("Кэш для отзывов пользователя с ID '{}' очищен при удалении отзыва.",
-                        userId);
-            });
+        Optional<Long> movieIdOpt = reviewRepository.findMovieIdById(review.getId());
+        Optional<Long> userIdOpt = reviewRepository.findUserIdById(review.getId());
 
-            logger.info("Отзыв с ID '{}' успешно удален.", review.getId());
+        movieIdOpt.ifPresent(movieId -> {
+            cache.evict(CacheKeys.REVIEWS_MOVIE_PREFIX + movieId);
+            logger.info("Кэш для отзывов по фильму с ID '{}' очищен при удалении отзыва.",
+                    movieId);
         });
+        userIdOpt.ifPresent(userId -> {
+            cache.evict(CacheKeys.REVIEWS_USER_PREFIX + userId);
+            logger.info("Кэш для отзывов пользователя с ID '{}' очищен при удалении отзыва.",
+                    userId);
+        });
+
         reviewRepository.deleteById(id);
+        logger.info("Отзыв с ID '{}' успешно удален.", review.getId());
     }
 }
 

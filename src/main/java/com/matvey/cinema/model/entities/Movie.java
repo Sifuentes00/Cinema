@@ -1,5 +1,6 @@
 package com.matvey.cinema.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,9 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = false)
 @Entity
 @Table(name = "movies")
 public class Movie {
@@ -19,9 +23,16 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Поле 'title' не должно быть пустым")
     private String title;
+
+    @NotBlank(message = "Поле 'director' не должно быть пустым")
     private String director;
+
+    @NotNull(message = "Поле 'releaseYear' не должно быть пустым")
     private int releaseYear;
+
+    @NotBlank(message = "Поле 'genre' не должно быть пустым")
     private String genre;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

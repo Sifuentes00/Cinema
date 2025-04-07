@@ -2,6 +2,7 @@ package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
+import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.entities.Theater;
 import com.matvey.cinema.repository.TheaterRepository;
 import com.matvey.cinema.service.TheaterService;
@@ -37,6 +38,11 @@ public class TheaterServiceImpl implements TheaterService {
         }
 
         Optional<Theater> theater = theaterRepository.findById(id);
+        if (theater.isEmpty()) {
+            logger.error("Театр с ID: {} не найден.", id);
+            throw new CustomNotFoundException("Театр не найден с ID: " + id);
+        }
+
         theater.ifPresent(value -> {
             cache.put(cacheKey, value);
             logger.info("Театр с ID: {} добавлен в кэш.", id);
@@ -77,6 +83,12 @@ public class TheaterServiceImpl implements TheaterService {
     @Override
     public void deleteById(Long id) {
         logger.info("Удаление театра с ID: {}", id);
+        Optional<Theater> theaterOpt = theaterRepository.findById(id);
+        if (theaterOpt.isEmpty()) {
+            logger.error("Театр с ID: {} не найден для удаления.", id);
+            throw new CustomNotFoundException("Театр не найден с ID: " + id);
+        }
+
         cache.evict(CacheKeys.THEATERS_ALL);
         cache.evict(CacheKeys.THEATER_PREFIX + id);
 

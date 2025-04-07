@@ -34,6 +34,7 @@ public class InMemoryCache {
     public Optional<Object> get(String key) {
         CacheValue<Object> cacheValue = cache.get(key);
         if (cacheValue != null && !isExpired(cacheValue)) {
+            cacheValue.timestamp = System.currentTimeMillis();
             return Optional.of(cacheValue.value);
         }
         return Optional.empty();

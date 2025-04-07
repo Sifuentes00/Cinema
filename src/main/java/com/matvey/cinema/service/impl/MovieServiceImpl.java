@@ -2,6 +2,7 @@ package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
+import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.repository.MovieRepository;
 import com.matvey.cinema.service.MovieService;
@@ -37,8 +38,12 @@ public class MovieServiceImpl implements MovieService {
         }
 
         Optional<Movie> movie = movieRepository.findById(id);
+        if (movie.isEmpty()) {
+            throw new CustomNotFoundException("Фильм не найден с ID: " + id);
+        }
+
         movie.ifPresent(value -> {
-            cache.put(cacheKey, value); // Кэшируем фильм
+            cache.put(cacheKey, value);
             logger.info("Фильм с ID: {} добавлен в кэш.", id);
         });
 
@@ -57,7 +62,7 @@ public class MovieServiceImpl implements MovieService {
         }
 
         List<Movie> movies = movieRepository.findAll();
-        cache.put(cacheKey, movies); // Кэшируем список фильмов
+        cache.put(cacheKey, movies);
         logger.info("Все фильмы добавлены в кэш.");
 
         return movies;
@@ -66,8 +71,6 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie save(Movie movie) {
         Movie savedMovie = movieRepository.save(movie);
-
-        // Очищаем кэш для всех фильмов и конкретного фильма
         cache.evict(CacheKeys.MOVIES_ALL);
         cache.evict(CacheKeys.MOVIE_PREFIX + savedMovie.getId());
         logger.info("Фильм с ID: {} успешно сохранен и кэш очищен.", savedMovie.getId());
@@ -78,9 +81,11 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void deleteById(Long id) {
         logger.info("Удаление фильма с ID: {}", id);
-        movieRepository.deleteById(id);
+        if (!movieRepository.existsById(id)) {
+            throw new CustomNotFoundException("Фильм не найден с ID: " + id);
+        }
 
-        // Очищаем кэш для всех фильмов и конкретного фильма
+        movieRepository.deleteById(id);
         cache.evict(CacheKeys.MOVIES_ALL);
         cache.evict(CacheKeys.MOVIE_PREFIX + id);
         logger.info("Фильм с ID: {} успешно удален и кэш очищен.", id);

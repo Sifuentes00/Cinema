@@ -2,6 +2,7 @@ package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
+import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.entities.Showtime;
 import com.matvey.cinema.repository.ShowtimeRepository;
 import com.matvey.cinema.service.ShowtimeService;
@@ -37,6 +38,11 @@ public class ShowtimeServiceImpl implements ShowtimeService {
         }
 
         Optional<Showtime> showtime = showtimeRepository.findById(id);
+        if (showtime.isEmpty()) {
+            logger.error("Сеанс с ID: {} не найден.", id);
+            throw new CustomNotFoundException("Сеанс не найден с ID: " + id);
+        }
+
         showtime.ifPresent(value -> {
             cache.put(cacheKey, value);
             logger.info("Сеанс с ID: {} добавлен в кэш.", id);
@@ -66,7 +72,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<Showtime> findShowtimesByTheaterName(String theaterName) {
         String cacheKey = CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterName;
-        logger.info("Поиск сеансов для театра");
+        logger.info("Поиск сеансов для театра: {}", theaterName);
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -84,7 +90,7 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     @Override
     public List<Showtime> findShowtimesByMovieTitle(String movieTitle) {
         String cacheKey = CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieTitle;
-        logger.info("Поиск сеансов для фильма");
+        logger.info("Поиск сеансов для фильма: {}", movieTitle);
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -126,28 +132,29 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     public void deleteById(Long id) {
         logger.info("Удаление сеанса с ID: {}", id);
         Optional<Showtime> showtimeOpt = showtimeRepository.findById(id);
-        showtimeOpt.ifPresent(showtime -> {
-            cache.evict(CacheKeys.SHOWTIMES_ALL);
-            cache.evict(CacheKeys.SHOWTIME_PREFIX + showtime.getId());
+        if (showtimeOpt.isEmpty()) {
+            logger.error("Сеанс с ID: {} не найден для удаления.", id);
+            throw new CustomNotFoundException("Сеанс не найден с ID: " + id);
+        }
 
-            Optional<Long> theaterIdOpt = showtimeRepository.findTheaterIdById(showtime.getId());
-            Optional<Long> movieIdOpt = showtimeRepository.findMovieIdById(showtime.getId());
+        Showtime showtime = showtimeOpt.get();
+        cache.evict(CacheKeys.SHOWTIMES_ALL);
+        cache.evict(CacheKeys.SHOWTIME_PREFIX + showtime.getId());
 
-            theaterIdOpt.ifPresent(theaterId -> {
-                cache.evict(CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId);
-                logger.info("Кэш для сеансов театра с ID '{}' очищен при удалении сеанса.",
-                        theaterId);
-            });
-            movieIdOpt.ifPresent(movieId -> {
-                cache.evict(CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieId);
-                logger.info("Кэш для сеансов фильма с ID '{}' очищен при удалении сеанса.",
-                        movieId);
-            });
+        Optional<Long> theaterIdOpt = showtimeRepository.findTheaterIdById(showtime.getId());
+        Optional<Long> movieIdOpt = showtimeRepository.findMovieIdById(showtime.getId());
 
-            logger.info("Сеанс с ID: {} успешно удален и кэш очищен.", showtime.getId());
+        theaterIdOpt.ifPresent(theaterId -> {
+            cache.evict(CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterId);
+            logger.info("Кэш для сеансов театра с ID '{}' очищен при удалении сеанса.", theaterId);
+        });
+        movieIdOpt.ifPresent(movieId -> {
+            cache.evict(CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieId);
+            logger.info("Кэш для сеансов фильма с ID '{}' очищен при удалении сеанса.", movieId);
         });
 
         showtimeRepository.deleteById(id);
+        logger.info("Сеанс с ID: {} успешно удален и кэш очищен.", showtime.getId());
     }
 }
 

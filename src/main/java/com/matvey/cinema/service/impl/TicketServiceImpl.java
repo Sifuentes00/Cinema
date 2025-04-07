@@ -2,6 +2,7 @@ package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
+import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.entities.Ticket;
 import com.matvey.cinema.repository.TicketRepository;
 import com.matvey.cinema.service.TicketService;
@@ -37,6 +38,11 @@ public class TicketServiceImpl implements TicketService {
         }
 
         Optional<Ticket> ticket = ticketRepository.findById(id);
+        if (ticket.isEmpty()) {
+            logger.error("Билет с ID: {} не найден.", id);
+            throw new CustomNotFoundException("Билет не найден с ID: " + id);
+        }
+
         ticket.ifPresent(value -> {
             cache.put(cacheKey, value);
             logger.info("Билет с ID: {} добавлен в кэш.", id);
@@ -66,7 +72,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Ticket> findTicketsByUserUsername(String userUsername) {
         String cacheKey = CacheKeys.TICKETS_USER_PREFIX + userUsername;
-        logger.info("Поиск билетов для пользователя");
+        logger.info("Поиск билетов для пользователя: {}", userUsername);
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -84,7 +90,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Ticket> findTicketsByShowtimeDateTime(String showtimeDateTime) {
         String cacheKey = CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeDateTime;
-        logger.info("Поиск билетов для времени сеанса");
+        logger.info("Поиск билетов для времени сеанса: {}", showtimeDateTime);
 
         Optional<Object> cachedData = cache.get(cacheKey);
         if (cachedData.isPresent()) {
@@ -149,32 +155,34 @@ public class TicketServiceImpl implements TicketService {
     public void deleteById(Long id) {
         logger.info("Удаление билета с ID: {}", id);
         Optional<Ticket> ticketOpt = ticketRepository.findById(id);
-        ticketOpt.ifPresent(ticket -> {
-            cache.evict(CacheKeys.TICKETS_ALL);
-            cache.evict(CacheKeys.TICKET_PREFIX + ticket.getId());
+        if (ticketOpt.isEmpty()) {
+            logger.error("Билет с ID: {} не найден для удаления.", id);
+            throw new CustomNotFoundException("Билет не найден с ID: " + id);
+        }
 
-            Optional<Long> userIdOpt = ticketRepository.findUserIdById(ticket.getId());
-            Optional<Long> showtimeIdOpt = ticketRepository.findShowtimeIdById(ticket.getId());
-            Optional<Long> seatIdOpt = ticketRepository.findSeatIdById(ticket.getId());
+        Ticket ticket = ticketOpt.get();
+        cache.evict(CacheKeys.TICKETS_ALL);
+        cache.evict(CacheKeys.TICKET_PREFIX + ticket.getId());
 
-            userIdOpt.ifPresent(userId -> {
-                cache.evict(CacheKeys.TICKETS_USER_PREFIX + userId);
-                logger.info("Кэш для билетов пользователя с ID '{}' очищен при удалении билета.",
-                        userId);
-            });
-            showtimeIdOpt.ifPresent(showtimeId -> {
-                cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId);
-                logger.info("Кэш для билетов сеанса с ID '{}' очищен при удалении билета.",
-                        showtimeId);
-            });
-            seatIdOpt.ifPresent(seatId -> {
-                cache.evict(CacheKeys.TICKETS_SEAT_PREFIX + seatId);
-                logger.info("Кэш для билетов места с ID '{}' очищен при удалении билета.", seatId);
-            });
+        Optional<Long> userIdOpt = ticketRepository.findUserIdById(ticket.getId());
+        Optional<Long> showtimeIdOpt = ticketRepository.findShowtimeIdById(ticket.getId());
+        Optional<Long> seatIdOpt = ticketRepository.findSeatIdById(ticket.getId());
 
-            logger.info("Билет с ID: {} успешно удален и кэш очищен.", ticket.getId());
+        userIdOpt.ifPresent(userId -> {
+            cache.evict(CacheKeys.TICKETS_USER_PREFIX + userId);
+            logger.info("Кэш для билетов пользователя с ID '{}' очищен при удалении билета.",
+                    userId);
+        });
+        showtimeIdOpt.ifPresent(showtimeId -> {
+            cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId);
+            logger.info("Кэш для билетов сеанса с ID '{}' очищен при удалении билета.", showtimeId);
+        });
+        seatIdOpt.ifPresent(seatId -> {
+            cache.evict(CacheKeys.TICKETS_SEAT_PREFIX + seatId);
+            logger.info("Кэш для билетов места с ID '{}' очищен при удалении билета.", seatId);
         });
 
         ticketRepository.deleteById(id);
+        logger.info("Билет с ID: {} успешно удален и кэш очищен.", ticket.getId());
     }
 }

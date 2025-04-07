@@ -2,6 +2,7 @@ package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.CacheKeys;
 import com.matvey.cinema.cache.InMemoryCache;
+import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.entities.User;
 import com.matvey.cinema.repository.UserRepository;
 import com.matvey.cinema.service.UserService;
@@ -37,6 +38,10 @@ public class UserServiceImpl implements UserService {
         }
 
         Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new CustomNotFoundException("Пользователь не найден с ID: " + id);
+        }
+
         user.ifPresent(value -> {
             cache.put(cacheKey, value);
             logger.info("Пользователь с ID: {} добавлен в кэш.", id);
@@ -79,6 +84,10 @@ public class UserServiceImpl implements UserService {
         logger.info("Удаление пользователя с ID: {}", id);
         cache.evict(CacheKeys.USERS_ALL);
         cache.evict(CacheKeys.USER_PREFIX + id);
+
+        if (!userRepository.existsById(id)) {
+            throw new CustomNotFoundException("Пользователь не найден с ID: " + id);
+        }
 
         userRepository.deleteById(id);
         logger.info("Пользователь с ID: {} успешно удален и кэш очищен.", id);
