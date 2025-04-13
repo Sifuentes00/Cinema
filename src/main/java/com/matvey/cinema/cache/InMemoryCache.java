@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class InMemoryCache {
 
     private final int maxSize;
-    private final long ttl; // Время жизни в миллисекундах
+    private final long ttl;
     private final Map<String, CacheValue<Object>> cache;
     private final ScheduledExecutorService scheduler;
 

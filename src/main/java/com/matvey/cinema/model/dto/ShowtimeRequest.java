@@ -1,6 +1,7 @@
 package com.matvey.cinema.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.matvey.cinema.validation.ValidShowtimeDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 public class ShowtimeRequest {
 
     @NotBlank(message = "Поле 'dateTime' не должно быть пустым")
+    @ValidShowtimeDate
     private String dateTime;
 
     @NotBlank(message = "Поле 'type' не должно быть пустым")

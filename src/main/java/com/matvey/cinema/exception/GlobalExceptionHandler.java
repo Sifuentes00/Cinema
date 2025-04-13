@@ -74,11 +74,5 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseBody
-    public ResponseEntity<String> handleUnknownException(Exception ex) {
-        logger.error("Неизвестная ошибка: {}", ex.getMessage(), ex);
-        String errorMessage = "Ошибка: Произошла неизвестная ошибка. Пожалуйста, попробуйте позже.";
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-    }
+
 }
