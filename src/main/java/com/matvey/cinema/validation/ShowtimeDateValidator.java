@@ -13,7 +13,14 @@ public class ShowtimeDateValidator implements ConstraintValidator<ValidShowtimeD
 
     @Override
     public void initialize(ValidShowtimeDate constraintAnnotation) {
+        // This method is not implemented because there are no initialization
+        // requirements for the ValidShowtimeDate annotation. If you attempt to
+        // use this method, it will throw an exception to indicate that it is
+        // not supported.
+        throw new
+            UnsupportedOperationException("Initialization is not supported for ValidShowtimeDate.");
     }
+
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
