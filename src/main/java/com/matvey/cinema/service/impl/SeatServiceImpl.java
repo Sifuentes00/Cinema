@@ -125,8 +125,6 @@ public class SeatServiceImpl implements SeatService {
 
         logger.info("Место с ID: {} успешно удалено и кэш очищен.", seat.getId());
         seatRepository.deleteById(id);
-        logger.info("Место с ID: {} успешно удалено и кэш очищен.", seat.getId());
-        seatRepository.deleteById(id);
     }
 }
 

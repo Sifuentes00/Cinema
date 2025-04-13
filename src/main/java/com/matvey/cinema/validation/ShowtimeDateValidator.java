@@ -21,7 +21,6 @@ public class ShowtimeDateValidator implements ConstraintValidator<ValidShowtimeD
             UnsupportedOperationException("Initialization is not supported for ValidShowtimeDate.");
     }
 
-
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null || value.isBlank()) {

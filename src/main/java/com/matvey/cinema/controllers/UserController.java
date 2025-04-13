@@ -1,6 +1,11 @@
 package com.matvey.cinema.controllers;
 
+import com.matvey.cinema.model.dto.UserRequest;
+import com.matvey.cinema.model.entities.Review;
+import com.matvey.cinema.model.entities.Ticket;
 import com.matvey.cinema.model.entities.User;
+import com.matvey.cinema.service.ReviewService;
+import com.matvey.cinema.service.TicketService;
 import com.matvey.cinema.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,10 +36,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "User Controller", description = "API для управления пользователями")
 public class UserController {
     private final UserService userService;
+    private final TicketService ticketService;
+    private final ReviewService reviewService;
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, TicketService ticketService,
+                          ReviewService reviewService) {
         this.userService = userService;
+        this.ticketService = ticketService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/{id}")
@@ -87,6 +99,52 @@ public class UserController {
         User createdUser = userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Создать нескольких пользователей",
+            description = "Создает нескольких пользователей на основе предоставленных данных")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Пользователи успешно созданы",
+                    content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "400",
+                    description = "Неверные входные данные", content = @Content)
+    })
+    public ResponseEntity<List<User>> createUsers(@Valid @RequestBody List<UserRequest>
+                                                              userRequests) {
+        logger.debug("Запрос на создание нескольких пользователей: {}", userRequests);
+
+        List<User> createdUsers = userRequests.stream()
+                .map(userRequest -> {
+                    User user = new User();
+                    user.setUsername(userRequest.getUsername());
+                    user.setEmail(userRequest.getEmail());
+
+                    if (userRequest.getTicketIds() != null) {
+                        List<Ticket> tickets = userRequest.getTicketIds().stream()
+                                .map(ticketId -> ticketService.findById(ticketId))
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .collect(Collectors.toList());
+                        user.setTickets(tickets);
+                    }
+
+                    if (userRequest.getReviewIds() != null) {
+                        List<Review> reviews = userRequest.getReviewIds().stream()
+                                .map(reviewId -> reviewService.findById(reviewId))
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .collect(Collectors.toList());
+                        user.setReviews(reviews);
+                    }
+
+                    return userService.save(user);
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUsers);
+    }
+
 
     @PutMapping("/{id}")
     @Operation(summary = "Обновить пользователя",
