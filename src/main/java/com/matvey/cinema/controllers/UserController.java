@@ -129,7 +129,6 @@ public class UserController {
                         user.setTickets(tickets);
                     }
 
-
                     if (userRequest.getReviewIds() != null) {
                         List<Review> reviews = userRequest.getReviewIds().stream()
                                 .map(reviewId -> reviewService.findById(reviewId))
@@ -141,7 +140,7 @@ public class UserController {
                     return userService.save(user);
 
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUsers);
     }
