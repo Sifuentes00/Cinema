@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TheaterServiceImplTest {
+class TheaterServiceImplTest {
 
     @Mock
     private TheaterRepository theaterRepository;
@@ -72,7 +72,8 @@ public class TheaterServiceImplTest {
         when(cache.get(CacheKeys.THEATER_PREFIX + theater.getId())).thenReturn(Optional.empty());
         when(theaterRepository.findById(theater.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> theaterService.findById(theater.getId()));
+        Long theaterId = theater.getId(); // Получаем ID театра
+        assertThrows(CustomNotFoundException.class, () -> theaterService.findById(theaterId));
         verify(theaterRepository, times(1)).findById(theater.getId());
     }
 
@@ -130,7 +131,8 @@ public class TheaterServiceImplTest {
     void testDeleteById_TheaterNotFound() {
         when(theaterRepository.findById(theater.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> theaterService.deleteById(theater.getId()));
+        Long theaterId = theater.getId(); // Получаем ID театра
+        assertThrows(CustomNotFoundException.class, () -> theaterService.deleteById(theaterId));
         verify(theaterRepository, never()).deleteById(theater.getId());
     }
 }

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
+class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
@@ -72,7 +72,8 @@ public class UserServiceImplTest {
         when(cache.get(CacheKeys.USER_PREFIX + user.getId())).thenReturn(Optional.empty());
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> userService.findById(user.getId()));
+        Long userId = user.getId(); // Получаем ID пользователя
+        assertThrows(CustomNotFoundException.class, () -> userService.findById(userId));
         verify(userRepository, times(1)).findById(user.getId());
     }
 
@@ -130,7 +131,8 @@ public class UserServiceImplTest {
     void testDeleteById_UserNotFound() {
         when(userRepository.existsById(user.getId())).thenReturn(false);
 
-        assertThrows(CustomNotFoundException.class, () -> userService.deleteById(user.getId()));
+        Long userId = user.getId(); 
+        assertThrows(CustomNotFoundException.class, () -> userService.deleteById(userId));
         verify(userRepository, never()).deleteById(user.getId());
     }
 }

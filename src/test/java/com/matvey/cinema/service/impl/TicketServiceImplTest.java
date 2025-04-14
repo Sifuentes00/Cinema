@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TicketServiceImplTest {
+class TicketServiceImplTest {
 
     @Mock
     private TicketRepository ticketRepository;
@@ -70,7 +70,8 @@ public class TicketServiceImplTest {
         when(cache.get(CacheKeys.TICKET_PREFIX + ticket.getId())).thenReturn(Optional.empty());
         when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> ticketService.findById(ticket.getId()));
+        Long ticketId = ticket.getId(); // Получаем ID билета
+        assertThrows(CustomNotFoundException.class, () -> ticketService.findById(ticketId));
         verify(ticketRepository, times(1)).findById(ticket.getId());
     }
 
@@ -128,7 +129,8 @@ public class TicketServiceImplTest {
     void testDeleteById_TicketNotFound() {
         when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> ticketService.deleteById(ticket.getId()));
+        Long ticketId = ticket.getId(); // Получаем ID билета
+        assertThrows(CustomNotFoundException.class, () -> ticketService.deleteById(ticketId));
         verify(ticketRepository, never()).deleteById(ticket.getId());
     }
 

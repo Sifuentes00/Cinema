@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ReviewServiceImplTest {
+class ReviewServiceImplTest {
 
     @Mock
     private ReviewRepository reviewRepository;
@@ -216,7 +216,8 @@ public class ReviewServiceImplTest {
     void testDeleteById_ReviewNotFound() {
         when(reviewRepository.findById(review.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> reviewService.deleteById(review.getId()));
+        Long reviewId = review.getId(); // Получаем ID отзыва
+        assertThrows(CustomNotFoundException.class, () -> reviewService.deleteById(reviewId));
         verify(reviewRepository, never()).deleteById(review.getId());
     }
 }

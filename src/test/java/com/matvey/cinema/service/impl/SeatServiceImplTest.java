@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SeatServiceImplTest {
+class SeatServiceImplTest {
 
     @Mock
     private SeatRepository seatRepository;
@@ -70,7 +70,8 @@ public class SeatServiceImplTest {
         when(cache.get(CacheKeys.SEAT_PREFIX + seat.getId())).thenReturn(Optional.empty());
         when(seatRepository.findById(seat.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> seatService.findById(seat.getId()));
+        Long seatId = seat.getId(); // Получаем ID места
+        assertThrows(CustomNotFoundException.class, () -> seatService.findById(seatId));
         verify(seatRepository, times(1)).findById(seat.getId());
     }
 
@@ -130,7 +131,8 @@ public class SeatServiceImplTest {
     void testDeleteById_SeatNotFound() {
         when(seatRepository.findById(seat.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> seatService.deleteById(seat.getId()));
+        Long seatId = seat.getId(); // Получаем ID места
+        assertThrows(CustomNotFoundException.class, () -> seatService.deleteById(seatId));
         verify(seatRepository, never()).deleteById(seat.getId());
     }
 }

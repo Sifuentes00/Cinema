@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MovieServiceImplTest {
+class MovieServiceImplTest {
 
     @Mock
     private MovieRepository movieRepository;
@@ -74,7 +74,9 @@ public class MovieServiceImplTest {
         when(cache.get(CacheKeys.MOVIE_PREFIX + movie.getId())).thenReturn(Optional.empty());
         when(movieRepository.findById(movie.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> movieService.findById(movie.getId()));
+        Long nonExistentMovieId = movie.getId(); // Предположим, что такого ID нет
+        assertThrows(CustomNotFoundException.class, () -> movieService.findById(nonExistentMovieId));
+
         verify(movieRepository, times(1)).findById(movie.getId());
     }
 
@@ -131,7 +133,8 @@ public class MovieServiceImplTest {
     void testDeleteById_MovieNotFound() {
         when(movieRepository.existsById(movie.getId())).thenReturn(false);
 
-        assertThrows(CustomNotFoundException.class, () -> movieService.deleteById(movie.getId()));
+        Long nonExistentMovieId = movie.getId(); // Предположим, что такого ID нет
+        assertThrows(CustomNotFoundException.class, () -> movieService.deleteById(nonExistentMovieId));
         verify(movieRepository, never()).deleteById(movie.getId());
     }
 }

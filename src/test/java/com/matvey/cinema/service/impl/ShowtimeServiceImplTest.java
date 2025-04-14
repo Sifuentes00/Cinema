@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ShowtimeServiceImplTest {
+class ShowtimeServiceImplTest {
 
     @Mock
     private ShowtimeRepository showtimeRepository;
@@ -70,7 +70,8 @@ public class ShowtimeServiceImplTest {
         when(cache.get(CacheKeys.SHOWTIME_PREFIX + showtime.getId())).thenReturn(Optional.empty());
         when(showtimeRepository.findById(showtime.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> showtimeService.findById(showtime.getId()));
+        Long showtimeId = showtime.getId(); // Получаем ID сеанса
+        assertThrows(CustomNotFoundException.class, () -> showtimeService.findById(showtimeId));
         verify(showtimeRepository, times(1)).findById(showtime.getId());
     }
 
@@ -128,7 +129,8 @@ public class ShowtimeServiceImplTest {
     void testDeleteById_ShowtimeNotFound() {
         when(showtimeRepository.findById(showtime.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> showtimeService.deleteById(showtime.getId()));
+        Long showtimeId = showtime.getId(); // Получаем ID сеанса
+        assertThrows(CustomNotFoundException.class, () -> showtimeService.deleteById(showtimeId));
         verify(showtimeRepository, never()).deleteById(showtime.getId());
     }
 
