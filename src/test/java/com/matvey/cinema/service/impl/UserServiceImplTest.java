@@ -131,7 +131,7 @@ class UserServiceImplTest {
     void testDeleteById_UserNotFound() {
         when(userRepository.existsById(user.getId())).thenReturn(false);
 
-        Long userId = user.getId(); 
+        Long userId = user.getId();
         assertThrows(CustomNotFoundException.class, () -> userService.deleteById(userId));
         verify(userRepository, never()).deleteById(user.getId());
     }

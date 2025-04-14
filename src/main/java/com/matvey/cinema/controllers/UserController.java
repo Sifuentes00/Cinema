@@ -125,20 +125,21 @@ public class UserController {
                                 .map(ticketId -> ticketService.findById(ticketId))
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
-                                .collect(Collectors.toList());
+                                .toList(); // Заменили collect(Collectors.toList()) на toList()
                         user.setTickets(tickets);
                     }
+
 
                     if (userRequest.getReviewIds() != null) {
                         List<Review> reviews = userRequest.getReviewIds().stream()
                                 .map(reviewId -> reviewService.findById(reviewId))
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
-                                .collect(Collectors.toList());
+                                .toList(); // Заменили collect(Collectors.toList()) на toList()
                         user.setReviews(reviews);
                     }
-
                     return userService.save(user);
+
                 })
                 .collect(Collectors.toList());
 
