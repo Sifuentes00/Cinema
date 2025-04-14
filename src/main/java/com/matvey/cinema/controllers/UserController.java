@@ -112,7 +112,7 @@ public class UserController {
     })
     public ResponseEntity<List<User>> createUsers(@Valid @RequestBody List<UserRequest>
                                                               userRequests) {
-        logger.debug("Запрос на создание нескольких пользователей: {}", userRequests);
+        logger.debug("Запрос на создание нескольких пользователей");
 
         List<User> createdUsers = userRequests.stream()
                 .map(userRequest -> {

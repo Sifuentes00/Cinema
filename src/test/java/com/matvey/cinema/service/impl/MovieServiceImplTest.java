@@ -34,7 +34,7 @@ public class MovieServiceImplTest {
     private Movie movie;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         movie = new Movie();
         movie.setId(1L);
         movie.setTitle("Test Movie");
@@ -44,7 +44,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testFindById_MovieFoundInCache() {
+    void testFindById_MovieFoundInCache() {
         String cacheKey = CacheKeys.MOVIE_PREFIX + movie.getId();
         when(cache.get(cacheKey)).thenReturn(Optional.of(movie));
 
@@ -57,7 +57,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testFindById_MovieFoundInRepository() {
+    void testFindById_MovieFoundInRepository() {
         when(cache.get(CacheKeys.MOVIE_PREFIX + movie.getId())).thenReturn(Optional.empty());
         when(movieRepository.findById(movie.getId())).thenReturn(Optional.of(movie));
 
@@ -70,7 +70,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testFindById_MovieNotFound() {
+    void testFindById_MovieNotFound() {
         when(cache.get(CacheKeys.MOVIE_PREFIX + movie.getId())).thenReturn(Optional.empty());
         when(movieRepository.findById(movie.getId())).thenReturn(Optional.empty());
 
@@ -79,7 +79,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testFindAll_MoviesFoundInCache() {
+    void testFindAll_MoviesFoundInCache() {
         String cacheKey = CacheKeys.MOVIES_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(movie)));
 
@@ -92,7 +92,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testFindAll_MoviesNotFoundInCache() {
+    void testFindAll_MoviesNotFoundInCache() {
         String cacheKey = CacheKeys.MOVIES_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(movieRepository.findAll()).thenReturn(Collections.singletonList(movie));
@@ -106,7 +106,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testSave_MovieSuccessfullySaved() {
+    void testSave_MovieSuccessfullySaved() {
         when(movieRepository.save(movie)).thenReturn(movie);
 
         Movie savedMovie = movieService.save(movie);
@@ -118,7 +118,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_MovieExists() {
+    void testDeleteById_MovieExists() {
         when(movieRepository.existsById(movie.getId())).thenReturn(true);
 
         movieService.deleteById(movie.getId());
@@ -128,7 +128,7 @@ public class MovieServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_MovieNotFound() {
+    void testDeleteById_MovieNotFound() {
         when(movieRepository.existsById(movie.getId())).thenReturn(false);
 
         assertThrows(CustomNotFoundException.class, () -> movieService.deleteById(movie.getId()));

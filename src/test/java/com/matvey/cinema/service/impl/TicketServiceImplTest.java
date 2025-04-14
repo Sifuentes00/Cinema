@@ -34,13 +34,13 @@ public class TicketServiceImplTest {
     private Ticket ticket;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ticket = new Ticket(10.0);
         ticket.setId(1L);
     }
 
     @Test
-    public void testFindById_TicketFoundInCache() {
+    void testFindById_TicketFoundInCache() {
         String cacheKey = CacheKeys.TICKET_PREFIX + ticket.getId();
         when(cache.get(cacheKey)).thenReturn(Optional.of(ticket));
 
@@ -53,7 +53,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindById_TicketFoundInRepository() {
+    void testFindById_TicketFoundInRepository() {
         when(cache.get(CacheKeys.TICKET_PREFIX + ticket.getId())).thenReturn(Optional.empty());
         when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.of(ticket));
 
@@ -66,7 +66,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindById_TicketNotFound() {
+    void testFindById_TicketNotFound() {
         when(cache.get(CacheKeys.TICKET_PREFIX + ticket.getId())).thenReturn(Optional.empty());
         when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.empty());
 
@@ -75,7 +75,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindAll_TicketsFoundInCache() {
+    void testFindAll_TicketsFoundInCache() {
         String cacheKey = CacheKeys.TICKETS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(ticket)));
 
@@ -88,7 +88,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindAll_TicketsNotFoundInCache() {
+    void testFindAll_TicketsNotFoundInCache() {
         String cacheKey = CacheKeys.TICKETS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(ticketRepository.findAll()).thenReturn(Collections.singletonList(ticket));
@@ -102,7 +102,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testSave_TicketSuccessfullySaved() {
+    void testSave_TicketSuccessfullySaved() {
         when(ticketRepository.save(ticket)).thenReturn(ticket);
 
         Ticket savedTicket = ticketService.save(ticket);
@@ -114,7 +114,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_TicketExists() {
+    void testDeleteById_TicketExists() {
         when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.of(ticket));
 
         ticketService.deleteById(ticket.getId());
@@ -125,7 +125,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_TicketNotFound() {
+    void testDeleteById_TicketNotFound() {
         when(ticketRepository.findById(ticket.getId())).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class, () -> ticketService.deleteById(ticket.getId()));
@@ -133,7 +133,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindTicketsByUserUsername_TicketsFoundInCache() {
+    void testFindTicketsByUserUsername_TicketsFoundInCache() {
         String cacheKey = CacheKeys.TICKETS_USER_PREFIX + "TestUser";
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(ticket)));
 
@@ -146,7 +146,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindTicketsByUserUsername_TicketsNotFoundInCache() {
+    void testFindTicketsByUserUsername_TicketsNotFoundInCache() {
         String cacheKey = CacheKeys.TICKETS_USER_PREFIX + "TestUser";
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(ticketRepository.findTicketsByUserUsername("TestUser")).thenReturn(Collections.singletonList(ticket));
@@ -160,7 +160,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindTicketsByShowtimeDateTime_TicketsFoundInCache() {
+    void testFindTicketsByShowtimeDateTime_TicketsFoundInCache() {
         String cacheKey = CacheKeys.TICKETS_SHOWTIME_PREFIX + "2023-10-10T10:00:00";
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(ticket)));
 
@@ -173,7 +173,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindTicketsByShowtimeDateTime_TicketsNotFoundInCache() {
+    void testFindTicketsByShowtimeDateTime_TicketsNotFoundInCache() {
         String cacheKey = CacheKeys.TICKETS_SHOWTIME_PREFIX + "2023-10-10T10:00:00";
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(ticketRepository.findTicketsByShowtimeDateTime("2023-10-10T10:00:00")).thenReturn(Collections.singletonList(ticket));
@@ -187,7 +187,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindTicketsBySeatId_TicketsFoundInCache() {
+    void testFindTicketsBySeatId_TicketsFoundInCache() {
         Long seatId = 1L;
         String cacheKey = CacheKeys.TICKETS_SEAT_PREFIX + seatId;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(ticket)));
@@ -201,7 +201,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void testFindTicketsBySeatId_TicketsNotFoundInCache() {
+    void testFindTicketsBySeatId_TicketsNotFoundInCache() {
         Long seatId = 1L;
         String cacheKey = CacheKeys.TICKETS_SEAT_PREFIX + seatId;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());

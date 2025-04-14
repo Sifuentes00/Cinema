@@ -34,7 +34,7 @@ public class UserServiceImplTest {
     private User user;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         user = new User();
         user.setId(1L);
         user.setUsername("TestUser");
@@ -42,7 +42,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindById_UserFoundInCache() {
+    void testFindById_UserFoundInCache() {
         String cacheKey = CacheKeys.USER_PREFIX + user.getId();
         when(cache.get(cacheKey)).thenReturn(Optional.of(user));
 
@@ -55,7 +55,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindById_UserFoundInRepository() {
+    void testFindById_UserFoundInRepository() {
         when(cache.get(CacheKeys.USER_PREFIX + user.getId())).thenReturn(Optional.empty());
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -68,7 +68,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindById_UserNotFound() {
+    void testFindById_UserNotFound() {
         when(cache.get(CacheKeys.USER_PREFIX + user.getId())).thenReturn(Optional.empty());
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
@@ -77,7 +77,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindAll_UsersFoundInCache() {
+    void testFindAll_UsersFoundInCache() {
         String cacheKey = CacheKeys.USERS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(user)));
 
@@ -90,7 +90,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindAll_UsersNotFoundInCache() {
+    void testFindAll_UsersNotFoundInCache() {
         String cacheKey = CacheKeys.USERS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(userRepository.findAll()).thenReturn(Collections.singletonList(user));
@@ -104,7 +104,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testSave_UserSuccessfullySaved() {
+    void testSave_UserSuccessfullySaved() {
         when(userRepository.save(user)).thenReturn(user);
 
         User savedUser = userService.save(user);
@@ -116,7 +116,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_UserExists() {
+    void testDeleteById_UserExists() {
         when(userRepository.existsById(user.getId())).thenReturn(true);
 
         userService.deleteById(user.getId());
@@ -127,7 +127,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_UserNotFound() {
+    void testDeleteById_UserNotFound() {
         when(userRepository.existsById(user.getId())).thenReturn(false);
 
         assertThrows(CustomNotFoundException.class, () -> userService.deleteById(user.getId()));

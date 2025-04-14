@@ -34,13 +34,13 @@ public class ReviewServiceImplTest {
     private Review review;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         review = new Review("Great movie!");
         review.setId(1L);
     }
 
     @Test
-    public void testFindById_ReviewFoundInCache() {
+    void testFindById_ReviewFoundInCache() {
         String cacheKey = CacheKeys.REVIEW_PREFIX + review.getId();
         when(cache.get(cacheKey)).thenReturn(Optional.of(review));
 
@@ -53,7 +53,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindById_ReviewFoundInRepository() {
+    void testFindById_ReviewFoundInRepository() {
         when(cache.get(CacheKeys.REVIEW_PREFIX + review.getId())).thenReturn(Optional.empty());
         when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
 
@@ -66,16 +66,17 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindById_ReviewNotFound() {
+    void testFindById_ReviewNotFound() {
         when(cache.get(CacheKeys.REVIEW_PREFIX + review.getId())).thenReturn(Optional.empty());
         when(reviewRepository.findById(review.getId())).thenReturn(Optional.empty());
 
-        assertThrows(CustomNotFoundException.class, () -> reviewService.findById(review.getId()));
+        Long reviewId = review.getId();
+        assertThrows(CustomNotFoundException.class, () -> reviewService.findById(reviewId));
         verify(reviewRepository, times(1)).findById(review.getId());
     }
 
     @Test
-    public void testFindAll_ReviewsFoundInCache() {
+    void testFindAll_ReviewsFoundInCache() {
         String cacheKey = CacheKeys.REVIEWS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(review)));
 
@@ -88,7 +89,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindAll_ReviewsNotFoundInCache() {
+    void testFindAll_ReviewsNotFoundInCache() {
         String cacheKey = CacheKeys.REVIEWS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(reviewRepository.findAll()).thenReturn(Collections.singletonList(review));
@@ -102,7 +103,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindReviewsByContent_ReviewsFoundInCache() {
+    void testFindReviewsByContent_ReviewsFoundInCache() {
         String cacheKey = CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent();
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(review)));
 
@@ -115,7 +116,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindReviewsByContent_ReviewsNotFoundInCache() {
+    void testFindReviewsByContent_ReviewsNotFoundInCache() {
         String cacheKey = CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent();
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(reviewRepository.findReviewsByContent(review.getContent())).thenReturn(Collections.singletonList(review));
@@ -129,7 +130,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindReviewsByMovieTitle_ReviewsFoundInCache() {
+    void testFindReviewsByMovieTitle_ReviewsFoundInCache() {
         String movieTitle = "Inception";
         String cacheKey = CacheKeys.REVIEWS_MOVIE_PREFIX + movieTitle;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(review)));
@@ -143,7 +144,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindReviewsByMovieTitle_ReviewsNotFoundInCache() {
+    void testFindReviewsByMovieTitle_ReviewsNotFoundInCache() {
         String movieTitle = "Inception";
         String cacheKey = CacheKeys.REVIEWS_MOVIE_PREFIX + movieTitle;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
@@ -158,7 +159,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindReviewsByUserUsername_ReviewsFoundInCache() {
+    void testFindReviewsByUserUsername_ReviewsFoundInCache() {
         String username = "TestUser";
         String cacheKey = CacheKeys.REVIEWS_USER_PREFIX + username;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(review)));
@@ -172,7 +173,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testFindReviewsByUserUsername_ReviewsNotFoundInCache() {
+    void testFindReviewsByUserUsername_ReviewsNotFoundInCache() {
         String username = "TestUser";
         String cacheKey = CacheKeys.REVIEWS_USER_PREFIX + username;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
@@ -187,7 +188,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testSave_ReviewSuccessfullySaved() {
+    void testSave_ReviewSuccessfullySaved() {
         when(reviewRepository.save(review)).thenReturn(review);
 
         Review savedReview = reviewService.save(review);
@@ -200,7 +201,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_ReviewExists() {
+    void testDeleteById_ReviewExists() {
         when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
 
         reviewService.deleteById(review.getId());
@@ -212,7 +213,7 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_ReviewNotFound() {
+    void testDeleteById_ReviewNotFound() {
         when(reviewRepository.findById(review.getId())).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class, () -> reviewService.deleteById(review.getId()));

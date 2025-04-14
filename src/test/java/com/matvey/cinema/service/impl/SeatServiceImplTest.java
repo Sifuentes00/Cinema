@@ -34,13 +34,13 @@ public class SeatServiceImplTest {
     private Seat seat;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         seat = new Seat(1, 1, true);
         seat.setId(1L);
     }
 
     @Test
-    public void testFindById_SeatFoundInCache() {
+    void testFindById_SeatFoundInCache() {
         String cacheKey = CacheKeys.SEAT_PREFIX + seat.getId();
         when(cache.get(cacheKey)).thenReturn(Optional.of(seat));
 
@@ -53,7 +53,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    public void testFindById_SeatFoundInRepository() {
+    void testFindById_SeatFoundInRepository() {
         when(cache.get(CacheKeys.SEAT_PREFIX + seat.getId())).thenReturn(Optional.empty());
         when(seatRepository.findById(seat.getId())).thenReturn(Optional.of(seat));
 
@@ -66,7 +66,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    public void testFindById_SeatNotFound() {
+    void testFindById_SeatNotFound() {
         when(cache.get(CacheKeys.SEAT_PREFIX + seat.getId())).thenReturn(Optional.empty());
         when(seatRepository.findById(seat.getId())).thenReturn(Optional.empty());
 
@@ -75,7 +75,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    public void testFindAll_SeatsFoundInCache() {
+    void testFindAll_SeatsFoundInCache() {
         String cacheKey = CacheKeys.SEATS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(seat)));
 
@@ -88,7 +88,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    public void testFindAll_SeatsNotFoundInCache() {
+    void testFindAll_SeatsNotFoundInCache() {
         String cacheKey = CacheKeys.SEATS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(seatRepository.findAll()).thenReturn(Collections.singletonList(seat));
@@ -102,7 +102,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    public void testSave_SeatSuccessfullySaved() {
+    void testSave_SeatSuccessfullySaved() {
         when(seatRepository.save(seat)).thenReturn(seat);
 
         Seat savedSeat = seatService.save(seat);
@@ -115,7 +115,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_SeatExists() {
+    void testDeleteById_SeatExists() {
         when(seatRepository.findById(seat.getId())).thenReturn(Optional.of(seat));
 
         seatService.deleteById(seat.getId());
@@ -127,7 +127,7 @@ public class SeatServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_SeatNotFound() {
+    void testDeleteById_SeatNotFound() {
         when(seatRepository.findById(seat.getId())).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class, () -> seatService.deleteById(seat.getId()));

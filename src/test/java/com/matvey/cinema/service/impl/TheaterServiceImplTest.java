@@ -34,7 +34,7 @@ public class TheaterServiceImplTest {
     private Theater theater;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         theater = new Theater();
         theater.setId(1L);
         theater.setName("Test Theater");
@@ -42,7 +42,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testFindById_TheaterFoundInCache() {
+    void testFindById_TheaterFoundInCache() {
         String cacheKey = CacheKeys.THEATER_PREFIX + theater.getId();
         when(cache.get(cacheKey)).thenReturn(Optional.of(theater));
 
@@ -55,7 +55,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testFindById_TheaterFoundInRepository() {
+    void testFindById_TheaterFoundInRepository() {
         when(cache.get(CacheKeys.THEATER_PREFIX + theater.getId())).thenReturn(Optional.empty());
         when(theaterRepository.findById(theater.getId())).thenReturn(Optional.of(theater));
 
@@ -68,7 +68,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testFindById_TheaterNotFound() {
+    void testFindById_TheaterNotFound() {
         when(cache.get(CacheKeys.THEATER_PREFIX + theater.getId())).thenReturn(Optional.empty());
         when(theaterRepository.findById(theater.getId())).thenReturn(Optional.empty());
 
@@ -77,7 +77,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testFindAll_TheatersFoundInCache() {
+    void testFindAll_TheatersFoundInCache() {
         String cacheKey = CacheKeys.THEATERS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(theater)));
 
@@ -90,7 +90,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testFindAll_TheatersNotFoundInCache() {
+    void testFindAll_TheatersNotFoundInCache() {
         String cacheKey = CacheKeys.THEATERS_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(theaterRepository.findAll()).thenReturn(Collections.singletonList(theater));
@@ -104,7 +104,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testSave_TheaterSuccessfullySaved() {
+    void testSave_TheaterSuccessfullySaved() {
         when(theaterRepository.save(theater)).thenReturn(theater);
 
         Theater savedTheater = theaterService.save(theater);
@@ -116,7 +116,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_TheaterExists() {
+    void testDeleteById_TheaterExists() {
         when(theaterRepository.findById(theater.getId())).thenReturn(Optional.of(theater));
 
         theaterService.deleteById(theater.getId());
@@ -127,7 +127,7 @@ public class TheaterServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_TheaterNotFound() {
+    void testDeleteById_TheaterNotFound() {
         when(theaterRepository.findById(theater.getId())).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class, () -> theaterService.deleteById(theater.getId()));

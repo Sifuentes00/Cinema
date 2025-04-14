@@ -34,13 +34,13 @@ public class ShowtimeServiceImplTest {
     private Showtime showtime;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         showtime = new Showtime("2023-10-01T20:00:00", "3D");
         showtime.setId(1L);
     }
 
     @Test
-    public void testFindById_ShowtimeFoundInCache() {
+    void testFindById_ShowtimeFoundInCache() {
         String cacheKey = CacheKeys.SHOWTIME_PREFIX + showtime.getId();
         when(cache.get(cacheKey)).thenReturn(Optional.of(showtime));
 
@@ -53,7 +53,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindById_ShowtimeFoundInRepository() {
+    void testFindById_ShowtimeFoundInRepository() {
         when(cache.get(CacheKeys.SHOWTIME_PREFIX + showtime.getId())).thenReturn(Optional.empty());
         when(showtimeRepository.findById(showtime.getId())).thenReturn(Optional.of(showtime));
 
@@ -66,7 +66,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindById_ShowtimeNotFound() {
+    void testFindById_ShowtimeNotFound() {
         when(cache.get(CacheKeys.SHOWTIME_PREFIX + showtime.getId())).thenReturn(Optional.empty());
         when(showtimeRepository.findById(showtime.getId())).thenReturn(Optional.empty());
 
@@ -75,7 +75,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindAll_ShowtimesFoundInCache() {
+    void testFindAll_ShowtimesFoundInCache() {
         String cacheKey = CacheKeys.SHOWTIMES_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(showtime)));
 
@@ -88,7 +88,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindAll_ShowtimesNotFoundInCache() {
+    void testFindAll_ShowtimesNotFoundInCache() {
         String cacheKey = CacheKeys.SHOWTIMES_ALL;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
         when(showtimeRepository.findAll()).thenReturn(Collections.singletonList(showtime));
@@ -102,7 +102,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testSave_ShowtimeSuccessfullySaved() {
+    void testSave_ShowtimeSuccessfullySaved() {
         when(showtimeRepository.save(showtime)).thenReturn(showtime);
 
         Showtime savedShowtime = showtimeService.save(showtime);
@@ -114,7 +114,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_ShowtimeExists() {
+    void testDeleteById_ShowtimeExists() {
         when(showtimeRepository.findById(showtime.getId())).thenReturn(Optional.of(showtime));
 
         showtimeService.deleteById(showtime.getId());
@@ -125,7 +125,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testDeleteById_ShowtimeNotFound() {
+    void testDeleteById_ShowtimeNotFound() {
         when(showtimeRepository.findById(showtime.getId())).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class, () -> showtimeService.deleteById(showtime.getId()));
@@ -133,7 +133,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindShowtimesByTheaterName_ShowtimesFoundInCache() {
+    void testFindShowtimesByTheaterName_ShowtimesFoundInCache() {
         String theaterName = "Test Theater";
         String cacheKey = CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterName;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(showtime)));
@@ -147,7 +147,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindShowtimesByTheaterName_ShowtimesNotFoundInCache() {
+    void testFindShowtimesByTheaterName_ShowtimesNotFoundInCache() {
         String theaterName = "Test Theater";
         String cacheKey = CacheKeys.SHOWTIMES_THEATER_PREFIX + theaterName;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
@@ -162,7 +162,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindShowtimesByMovieTitle_ShowtimesFoundInCache() {
+    void testFindShowtimesByMovieTitle_ShowtimesFoundInCache() {
         String movieTitle = "Test Movie";
         String cacheKey = CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieTitle;
         when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(showtime)));
@@ -176,7 +176,7 @@ public class ShowtimeServiceImplTest {
     }
 
     @Test
-    public void testFindShowtimesByMovieTitle_ShowtimesNotFoundInCache() {
+    void testFindShowtimesByMovieTitle_ShowtimesNotFoundInCache() {
         String movieTitle = "Test Movie";
         String cacheKey = CacheKeys.SHOWTIMES_MOVIE_PREFIX + movieTitle;
         when(cache.get(cacheKey)).thenReturn(Optional.empty());
