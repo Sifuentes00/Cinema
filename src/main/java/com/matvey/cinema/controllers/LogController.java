@@ -33,7 +33,7 @@ public class LogController {
     public ResponseEntity<Map<String, String>> generateLogFile(
             @RequestParam String date,
             @RequestParam(required = false) String logType) {
-        logger.info("Получен запрос на генерацию лог-файла для даты: {}, типа: {}", date, logType);
+        logger.info("Получен запрос на генерацию лог-файла для даты , типа ");
         try {
             String taskId = logService.generateLogFile(date, logType);
             Map<String, String> response = new HashMap<>();
@@ -41,7 +41,7 @@ public class LogController {
             logger.info("Задача генерации лога создана с ID: {}", taskId);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
         } catch (Exception e) {
-            logger.error("Ошибка при инициировании генерации лога для даты: {}", date, e);
+            logger.error("Ошибка при инициировании генерации лога для даты", e);
             throw e;
         }
     }
@@ -69,13 +69,13 @@ public class LogController {
 
     @GetMapping("/read/{taskId}")
     public ResponseEntity<?> downloadLogFile(@PathVariable String taskId) {
-        logger.info("Получен запрос на загрузку файла для задачи с ID: {}", taskId);
+        logger.info("Получен запрос на загрузку файла для задачи с ID");
         return logService.readLogFile(taskId);
     }
 
     @GetMapping("/view")
     public ResponseEntity<String> viewLogs(@RequestParam String date) {
-        logger.info("Получен запрос на просмотр логов для даты: {}", date);
+        logger.info("Получен запрос на просмотр логов для даты");
         String logs = logService.viewLogsByDate(date);
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).body(logs);
     }
