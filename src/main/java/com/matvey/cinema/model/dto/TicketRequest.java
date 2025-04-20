@@ -19,7 +19,6 @@ public class TicketRequest {
     @NotNull(message = "Поле 'seatId' не должно быть пустым")
     private Long seatId;
 
-    // Конструктор без параметров
     public TicketRequest() {
     }
 
