@@ -83,7 +83,7 @@ public class UserController {
     })
     public ResponseEntity<List<User>> getAllUsers() {
         logger.debug("Запрос на получение всех пользователей");
-        visitCounterService.writeVisit("/api/users"); // Увеличиваем счетчик для данного URL
+        visitCounterService.writeVisit("/api/users");
         List<User> users = userService.findAll();
         return ResponseEntity.ok(users);
     }
@@ -166,7 +166,7 @@ public class UserController {
                     example = "1") @PathVariable Long id,
             @Valid @RequestBody User user) {
         logger.debug("Запрос на обновление пользователя с ID: {}", id);
-        visitCounterService.writeVisit("/api/users/" + id); // Увеличиваем счетчик для данного URL
+        visitCounterService.writeVisit("/api/users/" + id);
         user.setId(id);
         User updatedUser = userService.save(user);
         return ResponseEntity.ok(updatedUser);
@@ -186,7 +186,7 @@ public class UserController {
                     example = "1") @PathVariable Long id) {
         logger.debug("Запрос на удаление пользователя с ID: {}", id);
         userService.deleteById(id);
-        visitCounterService.writeVisit("/api/users/" + id); // Увеличиваем счетчик для данного URL
+        visitCounterService.writeVisit("/api/users/" + id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -38,7 +38,7 @@ public class LogController {
             String taskId = logService.generateLogFile(date, logType);
             Map<String, String> response = new HashMap<>();
             response.put("taskId", taskId);
-            logger.info("Задача генерации лога создана с ID: {}", taskId);
+            logger.info("Задача генерации лога создана с ID");
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
         } catch (Exception e) {
             logger.error("Ошибка при инициировании генерации лога для даты", e);
@@ -48,7 +48,7 @@ public class LogController {
 
     @GetMapping("/status/{taskId}")
     public ResponseEntity<Map<String, Object>> getTaskStatus(@PathVariable String taskId) {
-        logger.info("Получен запрос статуса для задачи с ID: {}", taskId);
+        logger.info("Получен запрос статуса для задачи с ID");
         LogTask task = logService.getTaskStatus(taskId);
 
         Map<String, Object> response = new HashMap<>();

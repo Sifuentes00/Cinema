@@ -32,9 +32,9 @@ public class LogServiceImpl implements LogService {
 
     private static final Logger log = LoggerFactory.getLogger(LogServiceImpl.class);
 
-    private static final String outputLogDirectory =
+    private static final String outputDirectoryPath =
             "/Users/matveyvasiluk/Documents/java/JavaSpring/Cinema/generated_log_files";
-    private static final String mainLogFilePath =
+    private static final String mainLogFilePathString =
             "/Users/matveyvasiluk/Documents/java/JavaSpring/Cinema/logs/cinema.log";
 
     private final Map<String, LogTask> tasks = new ConcurrentHashMap<>();
@@ -62,7 +62,7 @@ public class LogServiceImpl implements LogService {
             try {
                 try {
                     log.info("Задача {} сейчас обрабатывается, ждем 10 секунд...", taskId);
-                    Thread.sleep(10000); // Задержка теперь внутри этого нового потока
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     log.warn("Задержка обработки задачи {} была прервана.", taskId);
                     Thread.currentThread().interrupt();
@@ -71,16 +71,16 @@ public class LogServiceImpl implements LogService {
                 log.info("Задача {} завершила симуляцию работы, продолжаем с файловыми операциями.",
                         taskId);
 
-                Path mainLogPath = Paths.get(mainLogFilePath);
+                Path mainLogPath = Paths.get(mainLogFilePathString);
                 if (!Files.exists(mainLogPath)) {
                     log.error("Основной лог-файл не найден по указанному пути: {}",
-                            mainLogFilePath);
+                            mainLogFilePathString);
                     currentTask.setStatus("FAILED");
-                    currentTask.setErrorMessage("Основной лог-файл не найден: " + mainLogFilePath);
-                    return; // Выходим из потока при ошибке
+                    currentTask.setErrorMessage("Основной лог-файл не найден: " + mainLogFilePathString);
+                    return;
                 }
 
-                Path outputDir = Paths.get(outputLogDirectory);
+                Path outputDir = Paths.get(outputDirectoryPath);
                 if (!Files.exists(outputDir)) {
                     log.info("Выходная директория не найдена. Создаем: {}",
                             outputDir.toAbsolutePath());
@@ -200,11 +200,11 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public String viewLogsByDate(String date) {
-        Path logPath = Paths.get(mainLogFilePath);
+        Path logPath = Paths.get(mainLogFilePathString);
         if (!Files.exists(logPath)) {
             log.warn("Попытка просмотреть логи, но основной лог-файл не найден по пути: {}",
-                    mainLogFilePath);
-            throw new RuntimeException("Основной лог-файл не найден: " + mainLogFilePath);
+                    mainLogFilePathString);
+            throw new RuntimeException("Основной лог-файл не найден: " + mainLogFilePathString);
         }
         try (Stream<String> lines = Files.lines(logPath, StandardCharsets.UTF_8)) {
             String result = lines
@@ -213,7 +213,7 @@ public class LogServiceImpl implements LogService {
             return result.isEmpty() ? "Логи не найдены, начинающиеся с даты: " + date : result;
         } catch (IOException e) {
             log.error("Ошибка чтения основного лог-файла по пути {} для просмотра",
-                    mainLogFilePath, e);
+                    mainLogFilePathString, e);
             throw new RuntimeException("Ошибка чтения лог-файла", e);
         }
     }
