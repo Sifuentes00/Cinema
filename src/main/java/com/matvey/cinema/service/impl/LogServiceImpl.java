@@ -76,7 +76,8 @@ public class LogServiceImpl implements LogService {
                     log.error("Основной лог-файл не найден по указанному пути: {}",
                             mainLogFilePathString);
                     currentTask.setStatus("FAILED");
-                    currentTask.setErrorMessage("Основной лог-файл не найден: " + mainLogFilePathString);
+                    currentTask.setErrorMessage("Основной лог-файл не найден: "
+                            + mainLogFilePathString);
                     return;
                 }
 
@@ -149,7 +150,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public LogTask getTaskStatus(String taskId) throws TaskNotFoundException {
-        log.debug("Попытка получить статус для задачи с ID: {}", taskId);
+        log.debug("Попытка получить статус для задачи с ID");
         LogTask task = tasks.get(taskId);
         if (task == null) {
             log.warn("Задача с ID '{}' не найдена в карте.", taskId);
