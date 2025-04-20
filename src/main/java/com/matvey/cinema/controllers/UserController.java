@@ -42,6 +42,10 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    private static final String VISIT_PATH_USERS_BASE_WITH_SLASH = "/api/users/";
+    private static final String VISIT_PATH_GET_ALL_USERS = "/api/users";
+    private static final String VISIT_PATH_CREATE_BULK_USERS = "/api/users/bulk";
+
     public UserController(UserService userService, TicketService ticketService,
                           ReviewService reviewService, VisitCounterService visitCounterService) {
         this.userService = userService;
@@ -54,17 +58,17 @@ public class UserController {
     @Operation(summary = "Получить пользователя по ID",
             description = "Возвращает пользователя с указанным ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Пользователь успешно получен",
+            @ApiResponse(responseCode = "200", description = "Пользователь успешно получен",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class))),
-        @ApiResponse(responseCode = "404",
+            @ApiResponse(responseCode = "404",
                     description = "Пользователь не найден", content = @Content)
     })
     public ResponseEntity<User> getUserById(
             @Parameter(description = "Идентификатор пользователя",
                     example = "1") @PathVariable Long id) {
         logger.debug("Запрос на получение пользователя с ID: {}", id);
-        visitCounterService.writeVisit("/api/users/" + id);
+        visitCounterService.writeVisit(VISIT_PATH_USERS_BASE_WITH_SLASH + id);
         Optional<User> user = userService.findById(id);
         return user.map(ResponseEntity::ok)
                 .orElseGet(() -> {
@@ -77,13 +81,13 @@ public class UserController {
     @Operation(summary = "Получить всех пользователей",
             description = "Возвращает список всех пользователей в базе данных")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Список пользователей успешно получен",
+            @ApiResponse(responseCode = "200", description = "Список пользователей успешно получен",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class)))
     })
     public ResponseEntity<List<User>> getAllUsers() {
         logger.debug("Запрос на получение всех пользователей");
-        visitCounterService.writeVisit("/api/users");
+        visitCounterService.writeVisit(VISIT_PATH_GET_ALL_USERS);
         List<User> users = userService.findAll();
         return ResponseEntity.ok(users);
     }
@@ -92,15 +96,15 @@ public class UserController {
     @Operation(summary = "Создать нового пользователя",
             description = "Создает нового пользователя на основе предоставленных данных")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Пользователь успешно создан",
+            @ApiResponse(responseCode = "201", description = "Пользователь успешно создан",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class))),
-        @ApiResponse(responseCode = "400",
+            @ApiResponse(responseCode = "400",
                     description = "Неверные входные данные", content = @Content)
     })
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         logger.debug("Запрос на создание нового пользователя: {}", user);
-        visitCounterService.writeVisit("/api/users");
+        visitCounterService.writeVisit(VISIT_PATH_GET_ALL_USERS);
         User createdUser = userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
@@ -109,14 +113,14 @@ public class UserController {
     @Operation(summary = "Создать нескольких пользователей",
             description = "Создает нескольких пользователей на основе предоставленных данных")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Пользователи успешно созданы",
+            @ApiResponse(responseCode = "201", description = "Пользователи успешно созданы",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class))),
-        @ApiResponse(responseCode = "400",
+            @ApiResponse(responseCode = "400",
                     description = "Неверные входные данные", content = @Content)
     })
     public ResponseEntity<List<User>> createUsers(@Valid @RequestBody List<UserRequest>
-                                                              userRequests) {
+                                                          userRequests) {
         logger.debug("Запрос на создание нескольких пользователей");
         List<User> createdUsers = userRequests.stream()
                 .map(userRequest -> {
@@ -144,7 +148,7 @@ public class UserController {
                     return userService.save(user);
                 })
                 .toList();
-        visitCounterService.writeVisit("/api/users/bulk");
+        visitCounterService.writeVisit(VISIT_PATH_CREATE_BULK_USERS);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUsers);
     }
@@ -153,12 +157,12 @@ public class UserController {
     @Operation(summary = "Обновить пользователя",
             description = "Обновляет существующего пользователя с указанным ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Пользователь успешно обновлен",
+            @ApiResponse(responseCode = "200", description = "Пользователь успешно обновлен",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class))),
-        @ApiResponse(responseCode = "400",
+            @ApiResponse(responseCode = "400",
                     description = "Неверные входные данные", content = @Content),
-        @ApiResponse(responseCode = "404",
+            @ApiResponse(responseCode = "404",
                     description = "Пользователь не найден", content = @Content)
     })
     public ResponseEntity<User> updateUser(
@@ -166,7 +170,7 @@ public class UserController {
                     example = "1") @PathVariable Long id,
             @Valid @RequestBody User user) {
         logger.debug("Запрос на обновление пользователя с ID: {}", id);
-        visitCounterService.writeVisit("/api/users/" + id);
+        visitCounterService.writeVisit(VISIT_PATH_USERS_BASE_WITH_SLASH + id);
         user.setId(id);
         User updatedUser = userService.save(user);
         return ResponseEntity.ok(updatedUser);
@@ -176,9 +180,9 @@ public class UserController {
     @Operation(summary = "Удалить пользователя",
             description = "Удаляет пользователя с указанным ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204",
+            @ApiResponse(responseCode = "204",
                     description = "Пользователь успешно удален", content = @Content),
-        @ApiResponse(responseCode = "404",
+            @ApiResponse(responseCode = "404",
                     description = "Пользователь не найден", content = @Content)
     })
     public ResponseEntity<Void> deleteUser(
@@ -186,7 +190,7 @@ public class UserController {
                     example = "1") @PathVariable Long id) {
         logger.debug("Запрос на удаление пользователя с ID: {}", id);
         userService.deleteById(id);
-        visitCounterService.writeVisit("/api/users/" + id);
+        visitCounterService.writeVisit(VISIT_PATH_USERS_BASE_WITH_SLASH + id);
         return ResponseEntity.noContent().build();
     }
 }

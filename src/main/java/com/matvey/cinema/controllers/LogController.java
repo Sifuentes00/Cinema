@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -63,12 +64,12 @@ public class LogController {
         response.put("downloadAvailable",
                 "COMPLETED".equals(task.getStatus()) && task.getFilePath() != null);
 
-        logger.info("Статус для задачи с ID {} успешно получен: {}", taskId, task.getStatus());
+        logger.info("Статус для задачи с ID успешно получен: {}", task.getStatus());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/read/{taskId}")
-    public ResponseEntity<?> downloadLogFile(@PathVariable String taskId) {
+    public ResponseEntity<Resource> downloadLogFile(@PathVariable String taskId) {
         logger.info("Получен запрос на загрузку файла для задачи с ID");
         return logService.readLogFile(taskId);
     }
