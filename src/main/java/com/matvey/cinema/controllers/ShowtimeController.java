@@ -17,18 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Showtime Controller", description = "API для управления сеансами")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/showtimes")
 public class ShowtimeController {
     private final ShowtimeService showtimeService;
@@ -96,6 +89,27 @@ public class ShowtimeController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(showtimes);
+    }
+
+    @GetMapping("/movie/{movieId}") // Путь включает ID фильма как переменную пути
+    @Operation(summary = "Получить сеансы по ID фильма",
+            description = "Возвращает список сеансов для фильма с указанным ID")
+    public ResponseEntity<List<Showtime>> getShowtimesByMovieId(
+            @Parameter(description = "Идентификатор фильма", example = "1")
+            @PathVariable Long movieId) { // Аннотация @PathVariable связывает переменную пути с параметром метода
+        logger.debug("Запрос на получение сеансов для фильма с ID: {}", movieId);
+
+        // Вызываем сервисный метод для получения сеансов по ID фильма
+        List<Showtime> showtimes = showtimeService.findShowtimesByMovieId(movieId);
+
+        if (showtimes == null || showtimes.isEmpty()) {
+            logger.warn("Сеансы для фильма с ID {} не найдены", movieId);
+            // Возвращаем 200 OK с пустым списком, а не 404, если сеансов просто нет
+            return ResponseEntity.ok(List.of()); // Возвращаем пустой список
+        }
+
+        logger.info("Найдено {} сеансов для фильма с ID {}", showtimes.size(), movieId);
+        return ResponseEntity.ok(showtimes); // Возвращаем список сеансов
     }
 
     @PostMapping

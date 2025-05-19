@@ -2,10 +2,8 @@ package com.matvey.cinema.controllers;
 
 import com.matvey.cinema.model.dto.ReviewRequest;
 import com.matvey.cinema.model.entities.Review;
-import com.matvey.cinema.repository.ReviewRepository;
-import com.matvey.cinema.service.MovieService;
 import com.matvey.cinema.service.ReviewService;
-import com.matvey.cinema.service.UserService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,44 +13,31 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+// import org.springframework.transaction.annotation.Transactional; // Not typically needed on controllers when service is transactional
 
 @RestController
 @RequestMapping("/api/reviews")
+@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Review Controller", description = "API для управления отзывами")
 public class ReviewController {
-    private final ReviewRepository reviewRepository;
-    private final MovieService movieService;
     private final ReviewService reviewService;
-    private final UserService userService;
     private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
-    public ReviewController(ReviewService reviewService, MovieService movieService,
-                            UserService userService, ReviewRepository reviewRepository) {
+    public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
-        this.movieService = movieService;
-        this.userService = userService;
-        this.reviewRepository = reviewRepository;
     }
 
     @GetMapping
     @Operation(summary = "Получить все отзывы",
             description = "Возвращает список всех отзывов в базе данных")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Список отзывов успешно получен",
+            @ApiResponse(responseCode = "200", description = "Список отзывов успешно получен",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Review.class)))
     })
@@ -62,79 +47,37 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Получить отзыв по ID", description = "Возвращает отзыв с указанным ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Отзыв успешно получен",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Review.class))),
-        @ApiResponse(responseCode = "404", description = "Отзыв не найден", content = @Content)
-    })
-    public ResponseEntity<Review> getReviewById(
-            @Parameter(description = "Идентификатор отзыва", example = "1") @PathVariable Long id) {
-        logger.debug("Запрос на получение отзыва с ID: {}", id);
-        Optional<Review> review = reviewService.findById(id);
-        return review.map(ResponseEntity::ok)
-                .orElseGet(() -> {
-                    logger.error("Отзыв с ID {} не найден", id);
-                    return ResponseEntity.notFound().build();
-                });
+    @GetMapping("/movie/{movieId}")
+    public ResponseEntity<List<Review>> getReviewsByMovieId(
+            @Parameter(description = "Идентификатор фильма", example = "1") @PathVariable Long movieId) {
+        logger.debug("Запрос на получение отзывов для фильма с ID: {}", movieId);
+        try {
+            List<Review> reviews = reviewService.findReviewsByMovieId(movieId);
+
+            if (reviews.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(reviews);
+        } catch (Exception e) {
+            logger.error("Ошибка при получении отзывов для фильма с ID {}:", movieId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @GetMapping("/movie")
-    @Operation(summary = "Получить отзывы по названию фильма",
-            description = "Возвращает список отзывов для указанного названия фильма")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Список отзывов успешно получен",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Review.class))),
-        @ApiResponse(responseCode = "204", description = "Отзывы не найдены", content = @Content)
-    })
-    public ResponseEntity<List<Review>> getReviewsByMovieTitle(
-            @RequestParam String movieTitle) {
-        logger.debug("Запрос на получение отзывов для фильма");
-        List<Review> reviews = reviewService.findReviewsByMovieTitle(movieTitle);
-        if (reviews.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(reviews);
-    }
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Get reviews by user ID",
+            description = "Returns a list of all reviews for the specified user")
+    public ResponseEntity<List<Review>> getReviewsByUserId(
+            @Parameter(description = "ID of the user") @PathVariable Long userId) {
+        logger.debug("Request to get reviews for user ID: {}", userId);
+        List<Review> reviews = reviewService.findByUserId(userId);
 
-    @GetMapping("/user")
-    @Operation(summary = "Получить отзывы по имени пользователя",
-            description = "Возвращает список отзывов для указанного имени пользователя")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Список отзывов успешно получен",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Review.class))),
-        @ApiResponse(responseCode = "204", description = "Отзывы не найдены", content = @Content)
-    })
-    public ResponseEntity<List<Review>> getReviewsByUserUsername(
-            @RequestParam String userUsername) {
-        logger.debug("Запрос на получение отзывов для пользователя");
-        List<Review> reviews = reviewService.findReviewsByUserUsername(userUsername);
         if (reviews.isEmpty()) {
+            logger.debug("Reviews for user ID {} not found (returning 204)", userId);
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(reviews);
-    }
 
-    @GetMapping("/content")
-    @Operation(summary = "Получить отзывы по содержимому",
-            description = "Возвращает список отзывов, содержащих указанный текст")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Список отзывов успешно получен",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Review.class))),
-        @ApiResponse(responseCode = "204", description = "Отзывы не найдены", content = @Content)
-    })
-    public ResponseEntity<List<Review>> getReviewsByContent(
-            @RequestParam String content) {
-        logger.debug("Запрос на получение отзывов, содержащих текст");
-        List<Review> reviews = reviewService.findReviewsByContent(content);
-        if (reviews.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+        logger.debug("Found {} reviews for user ID {}", reviews.size(), userId);
         return ResponseEntity.ok(reviews);
     }
 
@@ -142,60 +85,98 @@ public class ReviewController {
     @Operation(summary = "Создать новый отзыв",
             description = "Создает новый отзыв на основе предоставленных данных")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201",
-                description = "Отзыв успешно создан",
+            @ApiResponse(responseCode = "201",
+                    description = "Отзыв успешно создан",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Review.class))),
-        @ApiResponse(responseCode = "400",
-                description = "Неверные входные данные", content = @Content)
+            @ApiResponse(responseCode = "400",
+                    description = "Неверные входные данные", content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Фильм или пользователь не найдены", content = @Content)
     })
+    // @Transactional // Transactionality should be handled by the service layer
     public ResponseEntity<Review> createReview(@Valid @RequestBody ReviewRequest reviewRequest) {
         logger.debug("Запрос на создание нового отзыва: {}", reviewRequest);
-        Review review = new Review();
-        reviewRepository.updateReviewDetails(review, reviewRequest, movieService, userService);
-        Review createdReview = reviewRepository.save(review);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
+
+        try {
+            Review createdReview = reviewService.createReview(reviewRequest);
+            logger.info("Отзыв с ID '{}' успешно создан.", createdReview.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
+
+        } catch (RuntimeException e) {
+            logger.error("Ошибка при создании отзыва: {}", e.getMessage());
+            if (e.getMessage() != null && (e.getMessage().contains("Фильм не найден") || e.getMessage().contains("Пользователь не найден"))) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            logger.error("Непредвиденная ошибка при создании отзыва:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     @PutMapping("/{id}")
     @Operation(summary = "Обновить отзыв",
             description = "Обновляет существующий отзыв с указанным ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Отзыв успешно обновлен",
+            @ApiResponse(responseCode = "200", description = "Отзыв успешно обновлен",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Review.class))),
-        @ApiResponse(responseCode = "404", description = "Отзыв не найден", content = @Content)
+            @ApiResponse(responseCode = "400",
+                    description = "Неверные входные данные", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Отзыв, фильм или пользователь не найдены", content = @Content)
     })
+    // @Transactional // Transactionality should be handled by the service layer
     public ResponseEntity<Review> updateReview(
             @Parameter(description = "Идентификатор отзыва для обновления",
                     example = "1") @PathVariable Long id,
             @Valid @RequestBody ReviewRequest reviewRequest) {
         logger.debug("Запрос на обновление отзыва с ID: {}", id);
-        Optional<Review> existingReview = reviewService.findById(id);
-        if (existingReview.isPresent()) {
-            reviewRepository.updateReviewDetails(existingReview.get(), reviewRequest,
-                    movieService, userService);
-            Review updatedReview = reviewRepository.save(existingReview.get());
+        try {
+            Review updatedReview = reviewService.updateReview(id, reviewRequest);
+            logger.info("Отзыв с ID '{}' успешно обновлен.", updatedReview.getId());
             return ResponseEntity.ok(updatedReview);
-        } else {
-            logger.error("Отзыв с ID {} не найден", id);
-            return ResponseEntity.notFound().build();
+
+        } catch (RuntimeException e) {
+            logger.error("Ошибка при обновлении отзыва с ID {}: {}", id, e.getMessage());
+            if (e.getMessage() != null && (e.getMessage().contains("Отзыв не найден") || e.getMessage().contains("Фильм не найден") || e.getMessage().contains("Пользователь не найден"))) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            logger.error("Непредвиденная ошибка при обновлении отзыва с ID {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить отзыв", description = "Удаляет отзыв с указанным ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204",
+            @ApiResponse(responseCode = "204",
                     description = "Отзыв успешно удален", content = @Content),
-        @ApiResponse(responseCode = "404",
+            @ApiResponse(responseCode = "404",
                     description = "Отзыв не найден", content = @Content)
     })
+    // @Transactional // Transactionality should be handled by the service layer
     public ResponseEntity<Void> deleteReview(
-            @Parameter(description = "Идентификатор отзыва для удаления", example = "1")
-            @PathVariable Long id) {
+            @Parameter(description = "Идентификатор отзыва для удаления",
+                    example = "1") @PathVariable Long id) {
         logger.debug("Запрос на удаление отзыва с ID: {}", id);
-        reviewService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            reviewService.deleteById(id);
+            logger.info("Отзыв с ID: {} успешно удален.", id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            logger.error("Ошибка при удалении отзыва с ID {}: {}", id, e.getMessage());
+            if (e.getMessage() != null && e.getMessage().contains("Отзыв не найден")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            logger.error("Непредвиденная ошибка при удалении отзыва с ID {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

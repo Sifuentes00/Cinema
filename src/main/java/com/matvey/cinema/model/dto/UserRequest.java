@@ -13,13 +13,11 @@ public class UserRequest {
     private String username;
 
     @NotBlank(message = "Поле 'email' не должно быть пустым")
-    @Email(message = "Поле 'email' должно быть корректным адресом электронной почты")
+
     private String email;
 
-    @NotNull(message = "Поле 'tickets' не должно быть пустым")
     private List<Long> ticketIds; // Список идентификаторов билетов
 
-    @NotNull(message = "Поле 'reviews' не должно быть пустым")
     private List<Long> reviewIds; // Список идентификаторов отзывов
 
     // Конструкторы

@@ -35,7 +35,7 @@ class TicketServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        ticket = new Ticket(10.0);
+        ticket = new Ticket();
         ticket.setId(1L);
     }
 

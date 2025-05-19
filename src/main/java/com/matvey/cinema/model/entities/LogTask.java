@@ -1,14 +1,18 @@
 package com.matvey.cinema.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class LogTask {
+
     private String taskId;
     private String status;
     private String date;
     private String filePath;
     private String errorMessage;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     public LogTask() {

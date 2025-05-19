@@ -48,24 +48,13 @@ public class LogController {
     }
 
     @GetMapping("/status/{taskId}")
-    public ResponseEntity<Map<String, Object>> getTaskStatus(@PathVariable String taskId) {
-        logger.info("Получен запрос статуса для задачи с ID");
+    public ResponseEntity<LogTask> getTaskStatus(@PathVariable String taskId) {
+        logger.info("Получен запрос статуса для задачи с ID {}", taskId);
+
         LogTask task = logService.getTaskStatus(taskId);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("taskId", task.getTaskId());
-        response.put("status", task.getStatus());
-        response.put("createdAt", task.getCreatedAt());
-        response.put("filterDate", task.getDate());
-
-        if (task.getErrorMessage() != null && !task.getErrorMessage().isBlank()) {
-            response.put("errorMessage", task.getErrorMessage());
-        }
-        response.put("downloadAvailable",
-                "COMPLETED".equals(task.getStatus()) && task.getFilePath() != null);
-
-        logger.info("Статус для задачи с ID успешно получен: {}", task.getStatus());
-        return ResponseEntity.ok(response);
+        logger.info("Статус для задачи с ID {} успешно получен: {}", taskId, task.getStatus());
+        return ResponseEntity.ok(task);
     }
 
     @GetMapping("/read/{taskId}")

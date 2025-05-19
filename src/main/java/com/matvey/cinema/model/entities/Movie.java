@@ -1,21 +1,23 @@
+// In file com.matvey.cinema.model.entities.Movie.java
+
 package com.matvey.cinema.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = false)
 @Entity
 @Table(name = "movies")
 public class Movie {
@@ -23,25 +25,32 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Поле 'title' не должно быть пустым")
+    @NotBlank(message = "Название фильма не должно быть пустым")
     private String title;
 
-    @NotBlank(message = "Поле 'director' не должно быть пустым")
+    @NotBlank(message = "Режиссер не должен быть пустым")
     private String director;
 
-    @NotNull(message = "Поле 'releaseYear' не должно быть пустым")
-    private int releaseYear;
+    @Min(value = 1800, message = "Год выхода должен быть не ранее 1800")
+    @NotNull(message = "Год выхода не должен быть пустым")
+    private Integer releaseYear;
 
-    @NotBlank(message = "Поле 'genre' не должно быть пустым")
+    @NotBlank(message = "Жанр не должен быть пустым")
     private String genre;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Showtime> showtimes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
-    private List<Showtime> showtimes = new ArrayList<>();
+    public Movie() {
+        // Default constructor
+    }
+
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -67,11 +76,11 @@ public class Movie {
         this.director = director;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(int releaseYear) {
+    public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
     }
 
@@ -83,14 +92,6 @@ public class Movie {
         this.genre = genre;
     }
 
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
     public List<Showtime> getShowtimes() {
         return showtimes;
     }
@@ -99,15 +100,21 @@ public class Movie {
         this.showtimes = showtimes;
     }
 
-    public void addReview(Review review) {
-        if (!reviews.contains(review)) {
-            reviews.add(review);
-        }
+    public List<Review> getReviews() {
+        return reviews;
     }
 
-    public void addShowtime(Showtime showtime) {
-        if (!showtimes.contains(showtime)) {
-            showtimes.add(showtime);
-        }
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setMovie(this);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setMovie(null);
     }
 }

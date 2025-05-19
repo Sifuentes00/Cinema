@@ -70,6 +70,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        // <-- ДОБАВЛЕНО ЛОГИРОВАНИЕ -->
+        logger.debug("User object received in UserServiceImpl.save: {}", user);
+        if (user != null) {
+            logger.debug("Password field in User object before saving: {}", user.getPassword());
+        }
+        // <-- Конец ДОБАВЛЕННОГО ЛОГИРОВАНИЯ -->
+
+        // Пароль сохраняется как есть (строка)
         User savedUser = userRepository.save(user);
 
         cache.evict(CacheKeys.USERS_ALL);
@@ -91,5 +99,17 @@ public class UserServiceImpl implements UserService {
 
         userRepository.deleteById(id);
         logger.info("Пользователь с ID: {} успешно удален и кэш очищен.", id);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        logger.info("Поиск пользователя по нику: {}", username);
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Optional<User> findByUsernameAndPassword(String username, String password) {
+        logger.info("Поиск пользователя по нику: {} и паролю (без хеширования).", username);
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 }

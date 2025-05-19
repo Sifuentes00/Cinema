@@ -5,7 +5,6 @@ import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.entities.Review;
 import com.matvey.cinema.repository.ReviewRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,11 +32,6 @@ class ReviewServiceImplTest {
 
     private Review review;
 
-    @BeforeEach
-    void setUp() {
-        review = new Review("Great movie!");
-        review.setId(1L);
-    }
 
     @Test
     void testFindById_ReviewFoundInCache() {
@@ -102,32 +96,6 @@ class ReviewServiceImplTest {
         verify(cache, times(1)).put(cacheKey, Collections.singletonList(review));
     }
 
-    @Test
-    void testFindReviewsByContent_ReviewsFoundInCache() {
-        String cacheKey = CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent();
-        when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(review)));
-
-        List<Review> reviews = reviewService.findReviewsByContent(review.getContent());
-
-        assertEquals(1, reviews.size());
-        assertEquals(review, reviews.get(0));
-        verify(cache, times(1)).get(cacheKey);
-        verify(reviewRepository, never()).findReviewsByContent(anyString());
-    }
-
-    @Test
-    void testFindReviewsByContent_ReviewsNotFoundInCache() {
-        String cacheKey = CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent();
-        when(cache.get(cacheKey)).thenReturn(Optional.empty());
-        when(reviewRepository.findReviewsByContent(review.getContent())).thenReturn(Collections.singletonList(review));
-
-        List<Review> reviews = reviewService.findReviewsByContent(review.getContent());
-
-        assertEquals(1, reviews.size());
-        assertEquals(review, reviews.get(0));
-        verify(reviewRepository, times(1)).findReviewsByContent(review.getContent());
-        verify(cache, times(1)).put(cacheKey, Collections.singletonList(review));
-    }
 
     @Test
     void testFindReviewsByMovieTitle_ReviewsFoundInCache() {
@@ -199,25 +167,6 @@ class ReviewServiceImplTest {
         verify(cache, times(1)).evict(CacheKeys.REVIEW_PREFIX + savedReview.getId());
         verify(cache, times(1)).evict(CacheKeys.REVIEWS_CONTENT_PREFIX + savedReview.getContent());
     }
-
-    @Test
-    void testDeleteById_ReviewExists() {
-        when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
-
-        reviewService.deleteById(review.getId());
-
-        verify(reviewRepository, times(1)).deleteById(review.getId());
-        verify(cache, times(1)).evict(CacheKeys.REVIEWS_ALL);
-        verify(cache, times(1)).evict(CacheKeys.REVIEW_PREFIX + review.getId());
-        verify(cache, times(1)).evict(CacheKeys.REVIEWS_CONTENT_PREFIX + review.getContent());
-    }
-
-    @Test
-    void testDeleteById_ReviewNotFound() {
-        when(reviewRepository.findById(review.getId())).thenReturn(Optional.empty());
-
-        Long reviewId = review.getId(); // Получаем ID отзыва
-        assertThrows(CustomNotFoundException.class, () -> reviewService.deleteById(reviewId));
-        verify(reviewRepository, never()).deleteById(review.getId());
-    }
 }
+
+

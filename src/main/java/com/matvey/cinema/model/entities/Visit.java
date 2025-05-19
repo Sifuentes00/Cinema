@@ -1,10 +1,14 @@
 package com.matvey.cinema.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class Visit {
     private String id;
     private String url;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
     public Visit(String id, String url, LocalDateTime timestamp) {

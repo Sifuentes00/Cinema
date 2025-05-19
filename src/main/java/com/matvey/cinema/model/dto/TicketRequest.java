@@ -2,13 +2,16 @@ package com.matvey.cinema.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+// Removed @Positive because price can be null
+// import jakarta.validation.constraints.Positive;
 
 @JsonIgnoreProperties(ignoreUnknown = false)
 public class TicketRequest {
 
-    @Positive(message = "Поле 'price' должно быть положительным числом")
-    private double price;
+    // Changed primitive double to wrapper class Double to allow null
+    // If price is optional, remove @Positive or handle null case before validation
+    // @Positive(message = "Поле 'price' должно быть положительным числом")
+    private Double price; // <-- ИЗМЕНЕНО: Double вместо double
 
     @NotNull(message = "Поле 'showtimeId' не должно быть пустым")
     private Long showtimeId;
@@ -22,28 +25,17 @@ public class TicketRequest {
     public TicketRequest() {
     }
 
-    // Конструктор с параметрами
-    public TicketRequest(double price, Long showtimeId, Long userId, Long seatId) {
-        this.price = price;
-        this.showtimeId = showtimeId;
-        this.userId = userId;
-        this.seatId = seatId;
-    }
-
-    public double getPrice() {
+    // Getters and Setters
+    public Double getPrice() { // <-- ИЗМЕНЕНО: Возвращает Double
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) { // <-- ИЗМЕНЕНО: Принимает Double
         this.price = price;
     }
 
     public Long getShowtimeId() {
         return showtimeId;
-    }
-
-    public void setShowtimeId(Long showtimeId) {
-        this.showtimeId = showtimeId;
     }
 
     public Long getUserId() {

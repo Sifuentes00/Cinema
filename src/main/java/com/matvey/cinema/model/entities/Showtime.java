@@ -1,16 +1,9 @@
 package com.matvey.cinema.model.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Table(name = "showtimes")
@@ -22,17 +15,29 @@ public class Showtime {
     private String dateTime;
     private String type;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "showtime_id")
+    // <-- Связь с Фильмом (как мы добавляли) -->
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movie_id", nullable = false)
+    //@JsonIgnore
+    private Movie movie; // Предполагает наличие сущности Movie
+
+    // <-- ДОБАВЛЕНО: Связь с Театром -->
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "theater_id", nullable = false) // Указывает на колонку theater_id в БД
+    @JsonIgnore
+    private Theater theater; // Предполагает наличие сущности Theater
+    // <-- КОНЕЦ ДОБАВЛЕНО -->
+
+
+    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>();
 
     public Showtime() {
     }
 
-    public Showtime(String dateTime, String type) {
-        this.dateTime = dateTime;
-        this.type = type;
-    }
+    // Возможно, обновите конструктор, если используете
+    // public Showtime(String dateTime, String type, Movie movie, Theater theater) { ... }
 
     public Long getId() {
         return id;
@@ -57,6 +62,27 @@ public class Showtime {
     public void setType(String type) {
         this.type = type;
     }
+
+    // <-- Геттер и Сеттер для Movie -->
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+    // <-- КОНЕЦ -->
+
+    // <-- ДОБАВЛЕНО: Геттер и Сеттер для Theater -->
+    public Theater getTheater() {
+        return theater;
+    }
+
+    public void setTheater(Theater theater) {
+        this.theater = theater;
+    }
+    // <-- КОНЕЦ ДОБАВЛЕНО -->
+
 
     public List<Ticket> getTickets() {
         return tickets;

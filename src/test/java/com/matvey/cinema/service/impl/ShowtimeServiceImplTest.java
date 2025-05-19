@@ -35,7 +35,7 @@ class ShowtimeServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        showtime = new Showtime("2023-10-01T20:00:00", "3D");
+        showtime = new Showtime();
         showtime.setId(1L);
     }
 

@@ -9,7 +9,12 @@ public interface UserService {
 
     List<User> findAll();
 
-    User save(User user);
+    User save(User user); // <-- ПАРОЛЬ БУДЕТ СОХРАНЯТЬСЯ КАК STRING
 
     void deleteById(Long id);
+
+    Optional<User> findByUsername(String username);
+
+    // <-- ДОБАВЛЕНО: Сигнатура метода для поиска по нику И паролю -->
+    Optional<User> findByUsernameAndPassword(String username, String password);
 }

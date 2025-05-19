@@ -1,11 +1,9 @@
 package com.matvey.cinema.controllers;
 
-import com.matvey.cinema.model.entities.Visit;
 import com.matvey.cinema.service.VisitCounterService;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,10 +34,5 @@ public class VisitCounterController {
         response.put("count", count);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping("/all")
-    public List<Visit> getAllVisits() {
-        return visitCounterService.getVisits();
     }
 }

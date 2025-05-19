@@ -1,6 +1,7 @@
 package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.exception.FileNotReadyException;
+import com.matvey.cinema.exception.LogFileAccessException;
 import com.matvey.cinema.exception.TaskNotFoundException;
 import com.matvey.cinema.model.entities.LogTask;
 import com.matvey.cinema.service.LogService;
@@ -68,7 +69,7 @@ public class LogServiceImpl implements LogService {
                     Thread.currentThread().interrupt();
                 }
 
-                log.info("Задача {} завершила симуляцию работы, продолжаем с файловыми операциями.",
+                log.info("Задача {} завершила задержку, продолжаем с файловыми операциями.",
                         taskId);
 
                 Path mainLogPath = Paths.get(mainLogFilePathString);
@@ -169,7 +170,7 @@ public class LogServiceImpl implements LogService {
 
         if (task.getFilePath() == null || task.getFilePath().isBlank()) {
             log.error("Задача {} завершена, но путь к файлу отсутствует.", taskId);
-            return ResponseEntity.internalServerError().build();
+            throw new LogFileAccessException("Путь к файлу для завершенной задачи " + taskId + " не указан.");
         }
 
         try {

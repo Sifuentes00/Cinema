@@ -16,4 +16,6 @@ public interface ShowtimeService {
     Showtime save(Showtime showtime);
 
     void deleteById(Long id);
+
+    List<Showtime> findShowtimesByMovieId(Long movieId);
 }

@@ -80,5 +80,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ExceptionHandler(LogFileAccessException.class)
+    public ResponseEntity<String> handleLogFileAccessException(LogFileAccessException ex) {
+        logger.error("Исключение доступа к лог-файлу: {}", ex.getMessage(), ex);
+        // Возвращаем статус 404 Not Found, так как файл либо не существует, либо недоступен
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
 }

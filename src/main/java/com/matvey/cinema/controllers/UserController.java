@@ -22,17 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "User Controller", description = "API для управления пользователями")
 public class UserController {
     private final UserService userService;
@@ -41,10 +35,6 @@ public class UserController {
     private final VisitCounterService visitCounterService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    private static final String VISIT_PATH_USERS_BASE_WITH_SLASH = "/api/users/";
-    private static final String VISIT_PATH_GET_ALL_USERS = "/api/users";
-    private static final String VISIT_PATH_CREATE_BULK_USERS = "/api/users/bulk";
 
     public UserController(UserService userService, TicketService ticketService,
                           ReviewService reviewService, VisitCounterService visitCounterService) {
@@ -68,7 +58,7 @@ public class UserController {
             @Parameter(description = "Идентификатор пользователя",
                     example = "1") @PathVariable Long id) {
         logger.debug("Запрос на получение пользователя с ID: {}", id);
-        visitCounterService.writeVisit(VISIT_PATH_USERS_BASE_WITH_SLASH + id);
+        visitCounterService.writeVisit("/api/users/" + id);
         Optional<User> user = userService.findById(id);
         return user.map(ResponseEntity::ok)
                 .orElseGet(() -> {
@@ -87,9 +77,19 @@ public class UserController {
     })
     public ResponseEntity<List<User>> getAllUsers() {
         logger.debug("Запрос на получение всех пользователей");
-        visitCounterService.writeVisit(VISIT_PATH_GET_ALL_USERS);
+        visitCounterService.writeVisit("/api/users");
         List<User> users = userService.findAll();
         return ResponseEntity.ok(users);
+    }
+
+    // <-- ДОБАВЛЕНО: Конечная точка для получения билетов для конкретного пользователя -->
+    @GetMapping("/{userId}/tickets") // Сопоставляется с GET /api/users/{userId}/tickets
+    public ResponseEntity<List<Ticket>> getUserTickets(@PathVariable Long userId) {
+        logger.info("Получен запрос на получение билетов для пользователя с ID: {}", userId);
+        // Возможно, стоит добавить проверку, чтобы убедиться, что запрошенный userId соответствует ID аутентифицированного пользователя для безопасности
+        List<Ticket> tickets = ticketService.findByUserId(userId); // <-- Вызвать метод в вашем TicketService
+        logger.info("Возвращено {} билетов для пользователя с ID {}.", tickets.size(), userId);
+        return ResponseEntity.ok(tickets);
     }
 
     @PostMapping
@@ -103,8 +103,14 @@ public class UserController {
                     description = "Неверные входные данные", content = @Content)
     })
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        logger.debug("Запрос на создание нового пользователя: {}", user);
-        visitCounterService.writeVisit(VISIT_PATH_GET_ALL_USERS);
+        // <-- ДОБАВЛЕНО ЛОГИРОВАНИЕ -->
+        logger.debug("Received User object in UserController.createUser: {}", user);
+        if (user != null) {
+            logger.debug("Password field in received User object: {}", user.getPassword());
+        }
+        // <-- Конец ДОБАВЛЕННОГО ЛОГИРОВАНИЯ -->
+
+        visitCounterService.writeVisit("/api/users");
         User createdUser = userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
@@ -127,6 +133,8 @@ public class UserController {
                     User user = new User();
                     user.setUsername(userRequest.getUsername());
                     user.setEmail(userRequest.getEmail());
+                    // TODO: Здесь нужно установить пароль из UserRequest, если бы он там был
+                    // user.setPassword(userRequest.getPassword());
 
                     if (userRequest.getTicketIds() != null) {
                         List<Ticket> tickets = userRequest.getTicketIds().stream()
@@ -145,10 +153,12 @@ public class UserController {
                                 .toList();
                         user.setReviews(reviews);
                     }
+                    // Здесь вызывается save, который без хеширования сохранит пароль как есть.
+                    // Если бы в UserRequest был пароль и мы его здесь устанавливали, он бы сохранился.
                     return userService.save(user);
                 })
                 .toList();
-        visitCounterService.writeVisit(VISIT_PATH_CREATE_BULK_USERS);
+        visitCounterService.writeVisit("/api/users/bulk");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUsers);
     }
@@ -170,8 +180,10 @@ public class UserController {
                     example = "1") @PathVariable Long id,
             @Valid @RequestBody User user) {
         logger.debug("Запрос на обновление пользователя с ID: {}", id);
-        visitCounterService.writeVisit(VISIT_PATH_USERS_BASE_WITH_SLASH + id);
+        visitCounterService.writeVisit("/api/users/" + id);
         user.setId(id);
+        // TODO: В реальном приложении здесь не следует позволять менять пароль напрямую
+        // без отдельной процедуры или хеширования, если оно было.
         User updatedUser = userService.save(user);
         return ResponseEntity.ok(updatedUser);
     }
@@ -190,7 +202,7 @@ public class UserController {
                     example = "1") @PathVariable Long id) {
         logger.debug("Запрос на удаление пользователя с ID: {}", id);
         userService.deleteById(id);
-        visitCounterService.writeVisit(VISIT_PATH_USERS_BASE_WITH_SLASH + id);
+        visitCounterService.writeVisit("/api/users/" + id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -6,11 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = false)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShowtimeRequest {
 
     @NotBlank(message = "Поле 'dateTime' не должно быть пустым")
-    @ValidShowtimeDate
     private String dateTime;
 
     @NotBlank(message = "Поле 'type' не должно быть пустым")

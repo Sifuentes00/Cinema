@@ -1,5 +1,6 @@
 package com.matvey.cinema.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ public class Seat {
     private boolean isAvailable;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @JoinColumn(name = "seat_id")
     private List<Ticket> tickets = new ArrayList<>();
 

@@ -39,32 +39,42 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
     Optional<Long> findMovieIdById(@Param("id") Long id);
 
     default void updateShowtimeDetails(Showtime showtime, ShowtimeRequest showtimeRequest,
-                                       MovieService movieService, TheaterService theaterService,
-                                       TicketService ticketService) {
+                                       MovieService movieService, TheaterService theaterService, TicketService ticketService) {
+        // 1. Копируем простые поля (datetime, type, hall - если hall добавили в DTO)
+        // Валидация @NotBlank/@NotNull в контроллере уже проверила, что эти поля не null/пустые
         showtime.setDateTime(showtimeRequest.getDateTime());
         showtime.setType(showtimeRequest.getType());
+        // Если вы добавили hall в ShowtimeRequest DTO, скопируйте его тоже:
+        // showtime.setHall(showtimeRequest.getHall());
 
-        List<Ticket> tickets = new ArrayList<>();
-        for (Long ticketId : showtimeRequest.getTicketIds()) {
-            Optional<Ticket> ticketOptional = ticketService.findById(ticketId);
-            ticketOptional.ifPresent(tickets::add);
+
+        // 2. Копируем связь с Фильмом по ID из DTO
+        Long movieId = showtimeRequest.getMovieId();
+        if (movieId == null) {
+            // Хотя @NotNull в DTO должен ловить это раньше,
+            // хорошо иметь защиту или выбросить специфичную ошибку
+            throw new IllegalArgumentException("Movie ID cannot be null in ShowtimeRequest.");
         }
-        showtime.setTickets(tickets);
+        // Ищем сущность Movie по ID
+        Movie movie = movieService.findById(movieId)
+                .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: " + movieId));
+        // Устанавливаем найденную сущность Movie на Showtime
+        showtime.setMovie(movie);
 
-        Movie movie = movieService.findById(showtimeRequest.getMovieId())
-                .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: "
-                        + showtimeRequest.getMovieId()));
 
-        if (!movie.getShowtimes().contains(showtime)) {
-            movie.getShowtimes().add(showtime);
+        // 3. Копируем связь с Театром по ID из DTO
+        Long theaterId = showtimeRequest.getTheaterId();
+        if (theaterId == null) {
+            // Проверка на null, аналогично movieId
+            throw new IllegalArgumentException("Theater ID cannot be null in ShowtimeRequest.");
         }
+        // Ищем сущность Theater по ID
+        Theater theater = theaterService.findById(theaterId)
+                .orElseThrow(() -> new RuntimeException("Театр не найден с ID: " + theaterId));
+        // Устанавливаем найденную сущность Theater на Showtime
+        showtime.setTheater(theater);
 
-        Theater theater = theaterService.findById(showtimeRequest.getTheaterId())
-                .orElseThrow(() -> new RuntimeException("Театр не найден с ID: "
-                        + showtimeRequest.getTheaterId()));
-
-        if (!theater.getShowtimes().contains(showtime)) {
-            theater.getShowtimes().add(showtime);
-        }
     }
+
+    List<Showtime> findByMovieId(Long movieId);
 }
