@@ -1,9 +1,9 @@
 HELP.md
-target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 .DS_Store
+.env
 
 ### STS ###
 .apt_generated
@@ -20,7 +20,6 @@ target/
 *.iml
 *.ipr
 *.log
-.env
 logs/
 
 ### NetBeans ###
