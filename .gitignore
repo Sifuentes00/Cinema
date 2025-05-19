@@ -20,7 +20,7 @@ target/
 *.iml
 *.ipr
 *.log
-*.env
+.env
 logs/
 
 ### NetBeans ###
