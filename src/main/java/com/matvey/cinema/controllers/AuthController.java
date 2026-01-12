@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.security.crypto.password.PasswordEncoder; // <-- УДАЛЯЕМ ИМПОРТ
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,10 +25,7 @@ public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    private final UserService userService; // Или AuthService
-    // private final PasswordEncoder passwordEncoder; // <-- УДАЛЯЕМ ЗАВИСИМОСТЬ
-
-    // <-- УДАЛЯЕМ PasswordEncoder из конструктора -->
+    private final UserService userService;
     public AuthController(UserService userService /*, PasswordEncoder passwordEncoder*/) {
         this.userService = userService;
         // this.passwordEncoder = passwordEncoder; // <-- УДАЛЯЕМ ИНИЦИАЛИЗАЦИЮ
