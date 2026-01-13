@@ -1,4 +1,4 @@
-package com.cinema.api;
+package com.cinema.api.tests;
 
 import com.cinema.config.TestConfig;
 import org.junit.jupiter.api.Test;

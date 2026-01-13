@@ -15,18 +15,18 @@ public class CinemaUiTest {
 
     @BeforeEach
     void setUp() {
-        driver = DriverFactory.createDriver();  // SafariDriver
-        driver.get(TestConfig.BASE_URL);
+        driver = DriverFactory.createDriver();
+        driver.get("http://localhost:8080");
         mainPage = new MainPage(driver);
-    }
-
-    @Test
-    void mainPageShouldOpen() {
-        assertNotNull(mainPage.getTitleText());
     }
 
     @AfterEach
     void tearDown() {
-        if (driver != null) driver.quit();
+        driver.quit();
+    }
+
+    @Test
+    void mainPageShouldOpen() {
+        Assertions.assertTrue(mainPage.isOpened());
     }
 }
