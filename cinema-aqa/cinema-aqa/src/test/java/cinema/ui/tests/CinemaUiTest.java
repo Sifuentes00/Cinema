@@ -1,8 +1,7 @@
-package com.cinema.ui.tests;
+package cinema.ui.tests;
 
-import com.cinema.config.TestConfig;
-import com.cinema.ui.driver.DriverFactory;
-import com.cinema.ui.pages.MainPage;
+import cinema.ui.driver.DriverFactory;
+import cinema.ui.pages.MainPage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 

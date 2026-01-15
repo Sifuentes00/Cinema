@@ -1,5 +1,6 @@
-package com.cinema.utils;
+package cinema.utils;
 
+import cinema.config.TestConfig;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -9,12 +10,9 @@ import java.time.Duration;
 
 public class WaitUtils {
 
-    public static void waitForVisible(
-            WebDriver driver,
-            By locator,
-            int timeoutSeconds
-    ) {
-        new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds))
+    public static void waitForVisible(WebDriver driver, By locator) {
+        new WebDriverWait(driver, Duration.ofSeconds(TestConfig.TIMEOUT()))
                 .until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 }
+

@@ -1,7 +1,7 @@
-package com.cinema.ui.driver;
+package cinema.ui.driver;
 
-import com.cinema.config.BrowserType;
-import com.cinema.config.TestConfig;
+import cinema.config.BrowserType;
+import cinema.config.TestConfig;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;

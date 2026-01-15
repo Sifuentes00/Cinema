@@ -1,4 +1,4 @@
-package com.cinema.utils;
+package cinema.utils;
 
 public class UrlUtils {
 

@@ -1,7 +1,7 @@
-package com.cinema.base;
+package cinema.base;
 
-import com.cinema.config.TestConfig;
-import com.cinema.ui.driver.DriverFactory;
+import cinema.config.TestConfig;
+import cinema.ui.driver.DriverFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +14,7 @@ public abstract class BaseUiTest {
     void setUp() {
         driver = DriverFactory.createDriver();
         driver.manage().window().maximize();
-        driver.get(TestConfig.getBaseUrl());
+        driver.get(TestConfig.BASE_URL());
     }
 
     @AfterEach

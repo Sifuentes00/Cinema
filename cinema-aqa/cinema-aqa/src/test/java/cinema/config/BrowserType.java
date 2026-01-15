@@ -1,4 +1,4 @@
-package com.cinema.config;
+package cinema.config;
 
 public enum BrowserType {
     CHROME,
